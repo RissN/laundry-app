@@ -4,6 +4,18 @@ Sistem Informasi Laundry ini dirancang secara spesifik untuk mematuhi kaidah Uji
 
 ---
 
+## Tech Stack & Spesifikasi Teknologi 🛠️
+
+Sistem ini dikembangkan menggunakan kombinasi teknologi web modern (Full-Stack Monolith) untuk menjamin performa, keamanan, dan *developer experience* yang handal:
+
+1. **Laravel 12 (PHP 8.2+)**: Berperan sebagai *Backend / Core Framework*. Bertugas penuh dalam mengelola *Routing*, koneksi ke *Database*, pengamanan rute melalui *Middleware (CheckRole)*, validasi form, dan *Eloquent ORM*.
+2. **React 19**: Digunakan sebagai *Library Frontend* utama. Seluruh antar-muka (*User Interface*) pengguna dibangun berbasis komponen yang reaktif dan interaktif (khususnya untuk halaman Transaksi Kasir POS).
+3. **Inertia.js**: Berperan memfasilitasi komunikasi tipe SPA (*Single Page Application*) klasik. Inertia menjembatani pertukaran properti data langsung dari Controller Server Laravel ke komponen View React tanpa perlu merancang API terpisah (Tanpa REST API / JWT Token).
+4. **Tailwind CSS v4**: Sistem desain grafis *Utility-First* yang mengatur penempatan *layout*, tipografi, skema warna gelap-terang (Indigo/Slate), hingga pembuatan desain kartu dan *sidebar* agar terasa minimalis.
+5. **Laravel Breeze**: Sebuah sistem perancah (*scaffolding*) yang menghandle gerbang keamanan pintu masuk, mencakup proses otentikasi (Sistem Mendaftar / Verifikasi *Login* Aman).
+
+---
+
 ## 1. Alur Kerja (Workflow) Program Utama
 
 Sistem ini membagi wewenang berdasarkan tiga jenis hak akses (Role): **Admin**, **Operator**, dan **Pimpinan**.
