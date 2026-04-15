@@ -6,7 +6,6 @@ export default function Login({ status }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
-        remember: false,
     });
 
     const [showPassword, setShowPassword] = useState(false);
@@ -162,70 +161,6 @@ export default function Login({ status }) {
                     color: #0ea5e9;
                 }
 
-                .login-options {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    margin-bottom: 1.5rem;
-                    margin-top: 0.25rem;
-                }
-
-                .login-remember {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    cursor: pointer;
-                    user-select: none;
-                }
-
-                .login-checkbox {
-                    width: 18px;
-                    height: 18px;
-                    border-radius: 6px;
-                    border: 1.5px solid #cbd5e1;
-                    background: #f8fafc;
-                    appearance: none;
-                    -webkit-appearance: none;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                    position: relative;
-                }
-
-                .login-checkbox:checked {
-                    background: #0ea5e9;
-                    border-color: #0ea5e9;
-                }
-
-                .login-checkbox:checked::after {
-                    content: '✓';
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    color: white;
-                    font-size: 12px;
-                    font-weight: 700;
-                }
-
-                .login-remember-text {
-                    font-size: 0.8rem;
-                    color: #64748b;
-                    font-weight: 500;
-                }
-
-                .login-forgot {
-                    font-size: 0.8rem;
-                    color: #0ea5e9;
-                    text-decoration: none;
-                    font-weight: 500;
-                    transition: color 0.2s;
-                }
-
-                .login-forgot:hover {
-                    color: #0284c7;
-                    text-decoration: underline;
-                }
-
                 .login-btn {
                     width: 100%;
                     padding: 0.85rem;
@@ -309,12 +244,6 @@ export default function Login({ status }) {
                     .login-title {
                         font-size: 1.5rem;
                     }
-
-                    .login-options {
-                        flex-direction: column;
-                        align-items: flex-start;
-                        gap: 0.75rem;
-                    }
                 }
             `}</style>
 
@@ -394,20 +323,6 @@ export default function Login({ status }) {
                             {errors.password && <div className="login-error">{errors.password}</div>}
                         </div>
 
-                        {/* Options Row */}
-                        <div className="login-options">
-                            <label className="login-remember">
-                                <input
-                                    type="checkbox"
-                                    className="login-checkbox"
-                                    name="remember"
-                                    checked={data.remember}
-                                    onChange={(e) => setData('remember', e.target.checked)}
-                                />
-                                <span className="login-remember-text">Ingat saya</span>
-                            </label>
-                        </div>
-
                         {/* Submit Button */}
                         <button
                             type="submit"
@@ -424,6 +339,9 @@ export default function Login({ status }) {
                             )}
                         </button>
                     </form>
+                    <div className="mt-8 text-center text-sm text-slate-400">
+                        <p>Hanya untuk staf yang berwenang.</p>
+                    </div>
                 </div>
             </div>
         </>
