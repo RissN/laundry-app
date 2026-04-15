@@ -1,6 +1,22 @@
 import React, { useState } from 'react';
 import { Head, Link, useForm, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { 
+    PlusCircle, 
+    X, 
+    Trash2, 
+    ArrowLeft, 
+    UserPlus, 
+    Search, 
+    Scale, 
+    FileText, 
+    CheckCircle,
+    Info,
+    Loader2,
+    ShoppingCart,
+    ChevronRight,
+    LucideReceipt
+} from 'lucide-react';
 
 export default function Create({ customers, services }) {
     const [isNewCustomer, setIsNewCustomer] = useState(false);
@@ -43,14 +59,20 @@ export default function Create({ customers, services }) {
         e.preventDefault();
         import('sweetalert2').then((Swal) => {
             Swal.default.fire({
-                title: 'Proses Transaksi?',
+                title: 'Konfirmasi Transaksi',
                 text: "Pastikan data pelanggan dan layanan sudah benar.",
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#0ea5e9',
+                confirmButtonColor: '#0ea5e9', // sky-500
                 cancelButtonColor: '#f43f5e',
-                confirmButtonText: 'Ya, Proses Sekarang',
-                cancelButtonText: 'Batal'
+                confirmButtonText: 'Ya, Proses',
+                cancelButtonText: 'Batal',
+                background: '#ffffff',
+                borderRadius: '24px',
+                customClass: {
+                    title: 'font-black tracking-tight text-slate-800',
+                    htmlContainer: 'font-medium text-slate-600'
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     post(route('operator.transaction.store'));
@@ -64,182 +86,301 @@ export default function Create({ customers, services }) {
     }
 
     return (
-        <AuthenticatedLayout header="Transaksi Laundry Baru">
+        <AuthenticatedLayout 
+            header="Terima Laundry"
+        >
             <Head title="Transaksi Laundry" />
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2">
-                    <form onSubmit={handleSubmit} id="transaction-form" className="space-y-6">
-                        {/* Customer Section */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                            <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
-                                <h3 className="text-lg font-bold text-gray-800">1. Data Pelanggan</h3>
-                                <button type="button" onClick={() => setIsNewCustomer(!isNewCustomer)} className="text-sm text-sky-600 font-semibold hover:text-sky-800">
-                                    {isNewCustomer ? 'Pilih Pelanggan Lama' : '+ Pelanggan Baru'}
-                                </button>
-                            </div>
-                            
-                            {!isNewCustomer ? (
-                                <div>
-                                    <label className="block text-xs font-bold tracking-wider text-gray-700 uppercase mb-2">Pilih Pelanggan</label>
-                                    <select
-                                        value={data.id_customer}
-                                        onChange={(e) => setData('id_customer', e.target.value)}
-                                        className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 bg-gray-50 focus:bg-white text-gray-800 px-4 py-3"
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start mb-20 animate-in fade-in duration-700 transition-all">
+                {/* Form Section */}
+                <div className="lg:col-span-2 space-y-8">
+                    
+                    {/* Customer Info Card */}
+                    <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+                        <div className="px-8 py-5 border-b border-gray-50 bg-gray-50/20">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center shadow-sm">
+                                        <Search size={20} />
+                                    </div>
+                                    <h3 className="text-lg font-black text-slate-800 tracking-tight">1. Informasi Pelanggan</h3>
+                                </div>
+                                <div className="inline-flex p-1 bg-sky-50 rounded-2xl border border-sky-100/50">
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setIsNewCustomer(false)}
+                                        className={`px-5 py-2 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${!isNewCustomer ? 'bg-white text-sky-600 shadow-md ring-1 ring-sky-100' : 'text-gray-400 hover:text-sky-600'}`}
                                     >
-                                        <option value="">-- Cari atau Pilih Pelanggan --</option>
-                                        {customers.map(c => (
-                                            <option key={c.id} value={c.id}>{c.customer_name} - {c.phone}</option>
-                                        ))}
-                                    </select>
-                                    {errors.id_customer && <p className="mt-1 text-sm text-red-500 font-medium">{errors.id_customer}</p>}
+                                        Database Staf
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setIsNewCustomer(true)}
+                                        className={`px-5 py-2 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${isNewCustomer ? 'bg-white text-sky-600 shadow-md ring-1 ring-sky-100' : 'text-gray-400 hover:text-sky-600'}`}
+                                    >
+                                        Pendaftaran Baru
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="px-8 py-6">
+                            {!isNewCustomer ? (
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Pencarian Nama / No HP</label>
+                                    <div className="relative group">
+                                        <select
+                                            value={data.id_customer}
+                                            onChange={(e) => setData('id_customer', e.target.value)}
+                                            className="block w-full rounded-2xl border-gray-200 bg-white py-3.5 px-6 pr-12 text-gray-800 focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all font-bold shadow-sm appearance-none cursor-pointer"
+                                        >
+                                            <option value="">-- Cari Pelanggan Laundry --</option>
+                                            {customers.map(c => (
+                                                <option key={c.id} value={c.id}>{c.customer_name} • {c.phone}</option>
+                                            ))}
+                                        </select>
+                                        <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-sky-500 group-hover:scale-110 transition-transform">
+                                            <Search size={18} />
+                                        </div>
+                                    </div>
+                                    {errors.id_customer && <p className="mt-2 text-xs text-rose-500 font-bold ml-1 flex items-center gap-1"><Info size={12} /> {errors.id_customer}</p>}
                                 </div>
                             ) : (
-                                <div className="space-y-4 bg-sky-50/50 p-4 rounded-xl border border-sky-100">
-                                    <div>
-                                        <label className="block text-xs font-bold tracking-wider text-gray-700 uppercase mb-2">Nama Pelanggan Baru</label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-sky-50/50 rounded-[2rem] border border-sky-100">
+                                    <div className="md:col-span-1 space-y-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-sky-600 ml-1">Nama Pelanggan</label>
                                         <input
                                             type="text"
                                             value={data.new_customer_name}
                                             onChange={(e) => setData('new_customer_name', e.target.value)}
-                                            className="block w-full rounded-xl border-sky-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 px-4 py-2"
+                                            placeholder="Nama lengkap..."
+                                            className="block w-full rounded-2xl border-transparent bg-white py-3 px-5 text-gray-800 focus:ring-4 focus:ring-sky-200/50 focus:border-sky-400 transition-all font-bold shadow-sm"
                                         />
-                                        {errors.new_customer_name && <p className="mt-1 text-xs text-red-500 font-medium">{errors.new_customer_name}</p>}
+                                        {errors.new_customer_name && <p className="text-xs text-rose-500 font-bold ml-1">{errors.new_customer_name}</p>}
                                     </div>
-                                    <div>
-                                        <label className="block text-xs font-bold tracking-wider text-gray-700 uppercase mb-2">Nomor HP</label>
+                                    <div className="md:col-span-1 space-y-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-sky-600 ml-1">Nomor WhatsApp</label>
                                         <input
                                             type="text"
                                             value={data.new_customer_phone}
                                             onChange={(e) => setData('new_customer_phone', e.target.value)}
-                                            className="block w-full rounded-xl border-sky-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 px-4 py-2"
+                                            placeholder="08..."
+                                            className="block w-full rounded-2xl border-transparent bg-white py-3 px-5 text-gray-800 focus:ring-4 focus:ring-sky-200/50 focus:border-sky-400 transition-all font-bold shadow-sm"
                                         />
-                                        {errors.new_customer_phone && <p className="mt-1 text-xs text-red-500 font-medium">{errors.new_customer_phone}</p>}
+                                        {errors.new_customer_phone && <p className="text-xs text-rose-500 font-bold ml-1">{errors.new_customer_phone}</p>}
                                     </div>
-                                    <div>
-                                        <label className="block text-xs font-bold tracking-wider text-gray-700 uppercase mb-2">Alamat</label>
+                                    <div className="md:col-span-2 space-y-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-sky-600 ml-1">Alamat Lengkap</label>
                                         <textarea
                                             rows="2"
                                             value={data.new_customer_address}
                                             onChange={(e) => setData('new_customer_address', e.target.value)}
-                                            className="block w-full rounded-xl border-sky-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 px-4 py-2"
+                                            placeholder="Detail alamat domisili..."
+                                            className="block w-full rounded-2xl border-transparent bg-white py-3 px-5 text-gray-800 focus:ring-4 focus:ring-sky-200/50 focus:border-sky-400 transition-all font-bold shadow-sm"
                                         />
-                                        {errors.new_customer_address && <p className="mt-1 text-xs text-red-500 font-medium">{errors.new_customer_address}</p>}
+                                        {errors.new_customer_address && <p className="text-xs text-rose-500 font-bold ml-1">{errors.new_customer_address}</p>}
                                     </div>
                                 </div>
                             )}
                         </div>
+                    </div>
 
-                        {/* Order Items */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                            <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
-                                <h3 className="text-lg font-bold text-gray-800">2. Detail Layanan</h3>
+                    {/* Order Items section */}
+                    <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+                        <div className="px-8 py-5 border-b border-gray-50 flex items-center justify-between bg-gray-50/20">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center shadow-sm">
+                                    <Scale size={20} />
+                                </div>
+                                <h3 className="text-lg font-black text-slate-800 tracking-tight">2. Detail Layanan Laundry</h3>
                             </div>
-                            
-                            <div className="space-y-4">
-                                {data.items.map((item, index) => {
-                                    const selectedService = services.find(s => s.id == item.id_service);
-                                    const subtotal = selectedService ? selectedService.price * item.qty : 0;
-                                    
-                                    return (
-                                        <div key={index} className="flex flex-col sm:flex-row gap-3 items-end bg-gray-50 p-4 rounded-xl border border-gray-100 relative">
+                            <div className="flex items-center gap-2 px-4 py-1.5 bg-sky-100 text-sky-700 rounded-2xl border border-sky-200">
+                                <ShoppingCart size={14} />
+                                <span className="text-[10px] font-black uppercase tracking-widest">{data.items.length} Layanan</span>
+                            </div>
+                        </div>
+                        
+                        <div className="px-8 py-6 space-y-6">
+                            {data.items.map((item, index) => {
+                                const selectedService = services.find(s => s.id == item.id_service);
+                                const subtotal = selectedService ? selectedService.price * item.qty : 0;
+                                
+                                return (
+                                    <div key={index} className="relative animate-in zoom-in-95 duration-300">
+                                        <div className="bg-gray-50/40 rounded-[2rem] p-6 border border-gray-100 transition-all hover:bg-white hover:shadow-xl hover:border-sky-100 group">
                                             {data.items.length > 1 && (
-                                                <button type="button" onClick={() => handleRemoveItem(index)} className="absolute -top-3 -right-3 bg-red-100 text-red-600 rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-500 hover:text-white shadow-sm transition-colors">
-                                                    ✕
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => handleRemoveItem(index)} 
+                                                    className="absolute top-4 right-4 text-gray-300 hover:text-rose-500 transition-all hover:scale-110 p-2"
+                                                    title="Batalkan Item"
+                                                >
+                                                    <Trash2 size={18} />
                                                 </button>
                                             )}
-                                            <div className="flex-1 w-full relative">
-                                                <label className="block text-[10px] font-bold tracking-wider text-gray-500 uppercase mb-1">Pilih Layanan</label>
-                                                <select
-                                                    value={item.id_service}
-                                                    onChange={(e) => handleItemChange(index, 'id_service', e.target.value)}
-                                                    className="w-full rounded-lg border-gray-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3"
-                                                >
-                                                    <option value="">-- Layanan --</option>
-                                                    {services.map(s => <option key={s.id} value={s.id}>{s.service_name}</option>)}
-                                                </select>
-                                                <div className="mt-1">
-                                                     {errors[`items.${index}.id_service`] && <p className="text-[10px] text-red-500">{errors[`items.${index}.id_service`]}</p>}
+                                            
+                                            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-end">
+                                                {/* Service Select */}
+                                                <div className="xl:col-span-5 space-y-2">
+                                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Jenis Layanan</label>
+                                                    <div className="relative">
+                                                        <select
+                                                            value={item.id_service}
+                                                            onChange={(e) => handleItemChange(index, 'id_service', e.target.value)}
+                                                            className="w-full rounded-2xl border-gray-100 py-3 px-5 text-sm font-bold focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all bg-white shadow-sm appearance-none cursor-pointer"
+                                                        >
+                                                            <option value="">-- Pilih Layanan --</option>
+                                                            {services.map(s => <option key={s.id} value={s.id}>{s.service_name}</option>)}
+                                                        </select>
+                                                        <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-sky-400">
+                                                            <PlusCircle size={14} />
+                                                        </div>
+                                                    </div>
+                                                    {errors[`items.${index}.id_service`] && <p className="text-[10px] text-rose-500 font-bold ml-1">{errors[`items.${index}.id_service`]}</p>}
+                                                </div>
+
+                                                {/* Qty */}
+                                                <div className="xl:col-span-2 space-y-2">
+                                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 text-center block">Berat (Kg)</label>
+                                                    <input
+                                                        type="number"
+                                                        min="1"
+                                                        step="0.1"
+                                                        value={item.qty}
+                                                        onChange={(e) => handleItemChange(index, 'qty', e.target.value)}
+                                                        className="w-full rounded-2xl border-gray-100 py-3 px-4 text-base font-black text-center focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all bg-white shadow-sm"
+                                                    />
+                                                </div>
+
+                                                {/* Notes */}
+                                                <div className="xl:col-span-3 space-y-2">
+                                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Catatan Staf</label>
+                                                    <div className="relative">
+                                                        <input
+                                                            type="text"
+                                                            value={item.notes}
+                                                            onChange={(e) => handleItemChange(index, 'notes', e.target.value)}
+                                                            placeholder="Instruksi khusus..."
+                                                            className="w-full rounded-2xl border-gray-100 py-3 pl-11 pr-4 text-sm font-medium focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all bg-white shadow-sm"
+                                                        />
+                                                        <FileText size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                                                    </div>
+                                                </div>
+
+                                                {/* Subtotal Display */}
+                                                <div className="xl:col-span-2 space-y-3 text-right">
+                                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 pr-1">Subtotal</label>
+                                                    <div className="h-[48px] flex items-center justify-end">
+                                                        <span className="text-xl font-black text-sky-600 tracking-tighter">{formatCurrency(subtotal)}</span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="w-full sm:w-24">
-                                                <label className="block text-[10px] font-bold tracking-wider text-gray-500 uppercase mb-1">Berat (Kg)</label>
-                                                <input
-                                                    type="number"
-                                                    min="1"
-                                                    value={item.qty}
-                                                    onChange={(e) => handleItemChange(index, 'qty', e.target.value)}
-                                                    className="w-full rounded-lg border-gray-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3"
-                                                />
-                                            </div>
-                                            <div className="flex-1 w-full">
-                                                <label className="block text-[10px] font-bold tracking-wider text-gray-500 uppercase mb-1">Catatan Khusus</label>
-                                                <input
-                                                    type="text"
-                                                    value={item.notes}
-                                                    onChange={(e) => handleItemChange(index, 'notes', e.target.value)}
-                                                    className="w-full rounded-lg border-gray-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3"
-                                                    placeholder="Contoh: Jangan terlalu wangi"
-                                                />
-                                            </div>
-                                            <div className="w-full sm:w-32 bg-sky-50 px-4 py-2 rounded-lg border border-sky-100 flex items-center justify-end h-[38px]">
-                                                <span className="font-bold text-sky-700">{formatCurrency(subtotal)}</span>
-                                            </div>
                                         </div>
-                                    );
-                                })}
-                            </div>
+                                    </div>
+                                );
+                            })}
                             
-                            <button type="button" onClick={handleAddItem} className="mt-4 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 transition-colors w-full border border-dashed border-gray-300">
-                                + Tambah Layanan Lainnya
+                            <button 
+                                type="button" 
+                                onClick={handleAddItem} 
+                                className="flex items-center justify-center gap-3 w-full py-4 border-2 border-dashed border-sky-100 text-sky-400 hover:border-sky-400 hover:text-sky-600 hover:bg-sky-50/50 rounded-[2rem] transition-all font-black text-xs uppercase tracking-widest group bg-sky-50/20 active:scale-[0.99]"
+                            >
+                                <PlusCircle size={16} className="transition-transform group-hover:rotate-90" />
+                                Tambah Sub-Item Laundry
                             </button>
-                            {errors.items && <p className="mt-2 text-sm text-red-500 font-medium text-center">{errors.items}</p>}
                         </div>
-                    </form>
+                    </div>
                 </div>
 
-                {/* Sidebar Summary */}
-                <div className="lg:col-span-1">
-                    <div className="bg-gradient-to-br from-sky-900 to-sky-800 rounded-2xl shadow-lg sticky top-6 overflow-hidden">
-                        <div className="p-6">
-                            <h3 className="text-xl font-bold text-white mb-6">Ringkasan Transaksi</h3>
-                            <div className="space-y-4 border-b border-sky-700/50 pb-6 mb-6">
-                                {data.items.map((item, index) => {
-                                    const service = services.find(s => s.id == item.id_service);
-                                    if (!service) return null;
-                                    return (
-                                        <div key={index} className="flex justify-between text-sky-100 text-sm">
-                                            <div className="flex-1">
-                                                <p className="font-medium">{service.service_name}</p>
-                                                <p className="text-sky-300 text-xs">{item.qty} kg × {formatCurrency(service.price)}</p>
-                                            </div>
-                                            <span className="font-bold text-white relative top-2">
-                                                {formatCurrency(service.price * item.qty)}
-                                            </span>
-                                        </div>
-                                    )
-                                })}
+                {/* Receipt Sidebar - Clean Sky Theme */}
+                <div className="lg:col-span-1 sticky top-8 animate-in fade-in slide-in-from-right-4 duration-700 delay-200">
+                    <div className="bg-sky-50 rounded-[2.5rem] shadow-xl overflow-hidden relative border border-sky-100">
+                        {/* Soft Glow decorative */}
+                        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white opacity-40 blur-3xl"></div>
+                        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 rounded-full bg-sky-200 opacity-30 blur-3xl"></div>
+                        
+                        <div className="px-8 py-6 relative z-10">
+                            <div className="flex items-center justify-between mb-6 pb-4 border-b border-sky-100">
+                                <div className="flex items-center gap-2">
+                                    <LucideReceipt className="text-sky-600" size={18} />
+                                    <h3 className="text-base font-black text-slate-800 tracking-tight uppercase">Order Summary</h3>
+                                </div>
+                                <div className="text-[10px] text-sky-400 font-mono font-bold">#{Math.floor(Math.random() * 900000 + 100000)}</div>
                             </div>
                             
-                            <div className="flex flex-col mb-8">
-                                <span className="text-sky-200 text-sm mb-1 uppercase tracking-wider font-semibold">Total Tagihan</span>
-                                <span className="text-4xl font-black text-white">{formatCurrency(calculateTotal())}</span>
+                            <div className="space-y-6 mb-12 min-h-[100px]">
+                                {data.items.some(i => i.id_service) ? (
+                                    data.items.map((item, index) => {
+                                        const service = services.find(s => s.id == item.id_service);
+                                        if (!service) return null;
+                                        return (
+                                            <div key={index} className="flex justify-between items-start animate-in slide-in-from-top-1 bg-white/50 p-4 rounded-2xl border border-white shadow-sm">
+                                                <div className="space-y-1">
+                                                    <p className="text-slate-800 text-xs font-black tracking-tight">{service.service_name}</p>
+                                                    <p className="text-[9px] text-sky-500 font-black uppercase tracking-widest">{item.qty}Kg × {formatCurrency(service.price)}</p>
+                                                </div>
+                                                <span className="text-sm font-black text-sky-600">{formatCurrency(service.price * item.qty)}</span>
+                                            </div>
+                                        )
+                                    })
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center py-10 border-2 border-dashed border-sky-100 rounded-[2rem] bg-white/30 transition-all group hover:bg-white/50">
+                                        <ShoppingCart size={40} className="text-sky-200 mb-3 group-hover:scale-110 transition-transform" />
+                                        <p className="text-sky-300 text-[10px] font-black uppercase text-center tracking-widest">Keranjang Kosong</p>
+                                    </div>
+                                )}
                             </div>
+                            
+                            {/* Calculation Details */}
+                            <div className="space-y-4 mb-10 pt-8 border-t border-dashed border-sky-200">
+                                <form onSubmit={handleSubmit}>
+                                    <div className="flex flex-col gap-2 mb-10">
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className="text-slate-400 text-[9px] font-black uppercase tracking-[0.2em]">Total Bill Amount</span>
+                                            <div className="h-px bg-sky-100 flex-1 mx-4"></div>
+                                        </div>
+                                        <div className="text-5xl font-black text-slate-900 tracking-tighter leading-none flex items-baseline">
+                                            <span className="text-2xl mr-1 text-sky-500">Rp</span>
+                                            {calculateTotal().toLocaleString('id-ID')}
+                                        </div>
+                                    </div>
 
-                            <button 
-                                type="submit" 
-                                form="transaction-form" 
-                                disabled={processing || data.items.length === 0} 
-                                className="w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/30 transition-all disabled:opacity-50 text-lg uppercase tracking-wide"
-                            >
-                                Proses Transaksi
-                            </button>
+                                    <button 
+                                        type="submit" 
+                                        disabled={processing || calculateTotal() === 0 || (!data.id_customer && !isNewCustomer)}
+                                        className="group w-full bg-sky-600 hover:bg-sky-700 text-white py-5 rounded-2xl font-black text-sm shadow-lg shadow-sky-200 transition-all active:scale-[0.98] disabled:opacity-30 disabled:grayscale flex items-center justify-center gap-3 uppercase tracking-widest overflow-hidden relative"
+                                    >
+                                        {processing ? (
+                                            <Loader2 size={20} className="animate-spin" />
+                                        ) : (
+                                            <CheckCircle size={20} className="transition-transform group-hover:scale-110" />
+                                        )}
+                                        <span className="relative z-10">{processing ? 'Proses...' : 'Finalisasi & Bayar'}</span>
+                                    </button>
+                                </form>
+                                
+                                <div className="text-center pt-6">
+                                    <p className="text-[9px] text-sky-300 font-black uppercase tracking-[0.3em]">Official Receipt LaundriQ</p>
+                                </div>
+                            </div>
                         </div>
-                        {/* decorative element */}
-                        <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-white opacity-5 blur-2xl"></div>
-                        <div className="absolute bottom-0 left-0 -ml-8 -mb-8 w-32 h-32 rounded-full bg-sky-500 opacity-20 blur-2xl"></div>
                     </div>
                 </div>
             </div>
+            
+            <style>{`
+                input[type=number]::-webkit-inner-spin-button, 
+                input[type=number]::-webkit-outer-spin-button { 
+                  -webkit-appearance: none; 
+                  margin: 0; 
+                }
+                input[type=number] {
+                  -moz-appearance: textfield;
+                }
+                select {
+                    background-image: none !important;
+                }
+            `}</style>
         </AuthenticatedLayout>
     );
 }

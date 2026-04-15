@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -17,18 +18,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        $userLevel = auth()->user()->id_level;
-        $stats = [];
-        if ($userLevel == 1) { // Admin
-            $stats = [
-                'total_customers' => \App\Models\Customer::count(),
-                'total_orders_today' => \App\Models\TransOrder::whereDate('order_date', date('Y-m-d'))->count(),
-                'revenue_today' => \App\Models\TransOrder::whereDate('order_end_date', date('Y-m-d'))->where('order_status', 1)->sum('total')
-            ];
-        }
-        return Inertia::render('Dashboard', compact('stats'));
-    })->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

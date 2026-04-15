@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
 import Swal from 'sweetalert2';
+import { 
+    WashingMachine, 
+    LayoutDashboard, 
+    Users, 
+    UserCircle, 
+    Package, 
+    PlusCircle, 
+    HandCoins, 
+    FileBarChart2, 
+    LogOut, 
+    Menu 
+} from 'lucide-react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const { auth, flash } = usePage().props;
@@ -28,6 +40,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 timer: 4000,
                 showConfirmButton: true,
                 confirmButtonColor: '#0ea5e9',
+                confirmButtonColor: '#0ea5e9',
             });
         }
     }, [flash]);
@@ -43,28 +56,28 @@ export default function AuthenticatedLayout({ header, children }) {
         {
             group: 'Utama',
             links: [
-                { name: 'Dashboard', route: 'dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', allowed: [1, 2, 3] },
+                { name: 'Dashboard', route: 'dashboard', icon: LayoutDashboard, allowed: [1, 2, 3] },
             ]
         },
         {
             group: 'Master Data',
             links: [
-                { name: 'Data Customer', route: 'admin.customers.index', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z', allowed: [1] },
-                { name: 'Data User', route: 'admin.users.index', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', allowed: [1] },
-                { name: 'Data Service', route: 'admin.services.index', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10', allowed: [1] },
+                { name: 'Data Customer', route: 'admin.customers.index', icon: Users, allowed: [1] },
+                { name: 'Data User', route: 'admin.users.index', icon: UserCircle, allowed: [1] },
+                { name: 'Data Service', route: 'admin.services.index', icon: Package, allowed: [1] },
             ]
         },
         {
             group: 'Transaksi',
             links: [
-                { name: 'Terima Laundry', route: 'operator.transaction.create', icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4', allowed: [1, 2] },
-                { name: 'Pengambilan & Bayar', route: 'operator.pickup.index', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', allowed: [1, 2] },
+                { name: 'Terima Laundry', route: 'operator.transaction.create', icon: PlusCircle, allowed: [1, 2] },
+                { name: 'Pengambilan & Bayar', route: 'operator.pickup.index', icon: HandCoins, allowed: [1, 2] },
             ]
         },
         {
             group: 'Laporan',
             links: [
-                { name: 'Laporan Penjualan', route: 'pimpinan.report.index', icon: 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', allowed: [3] },
+                { name: 'Laporan Penjualan', route: 'pimpinan.report.index', icon: FileBarChart2, allowed: [3] },
             ]
         }
     ];
@@ -102,7 +115,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 <div className="flex items-center justify-center h-20 border-b border-sky-800/50 flex-shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="bg-white p-2 rounded-xl shadow-sm">
-                            <span className="text-sky-900 font-bold text-xl px-1">🧺</span>
+                            <WashingMachine className="text-sky-900 w-8 h-8" />
                         </div>
                         <div>
                             <h1 className="text-xl font-bold font-sans tracking-wide">LaundriQ</h1>
@@ -139,9 +152,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                                         : 'text-sky-200 hover:bg-sky-800/60 hover:text-white'
                                                 }`}
                                             >
-                                                <svg className={`mr-3 h-5 w-5 flex-shrink-0 transition-colors ${route().current(link.route) ? 'text-white' : 'text-sky-400 group-hover:text-sky-300'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={link.icon} />
-                                                </svg>
+                                                <link.icon className={`mr-3 h-5 w-5 flex-shrink-0 transition-colors ${route().current(link.route) ? 'text-white' : 'text-sky-400 group-hover:text-sky-300'}`} />
                                                 {link.name}
                                             </Link>
                                         ))}
@@ -152,14 +163,12 @@ export default function AuthenticatedLayout({ header, children }) {
                     </div>
                 </div>
                 
-                <div className="p-4 border-t border-sky-800/50 flex-shrink-0 bg-sky-900/50">
+                <div className="p-6 border-t border-sky-800/30 flex-shrink-0 bg-sky-950/20">
                     <button
                         onClick={handleLogout}
-                        className="flex w-full items-center justify-center px-4 py-2.5 text-sm font-bold tracking-wide text-red-200 bg-red-500/10 rounded-lg hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-500/20 transition-all border border-red-500/20 hover:border-red-500"
+                        className="flex w-full items-center justify-center px-4 py-3 text-xs font-black tracking-[0.1em] text-white bg-rose-600 rounded-xl hover:bg-rose-500 shadow-lg shadow-rose-950/40 transition-all active:scale-[0.98] border border-rose-500/50 group"
                     >
-                        <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
+                        <LogOut className="w-4 h-4 mr-2.5 transition-transform group-hover:-translate-x-1" />
                         LOGOUT SISTEM
                     </button>
                 </div>
@@ -174,9 +183,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                 onClick={() => setIsSidebarOpen(true)}
                                 className="text-gray-500 hover:text-sky-600 focus:outline-none p-2 rounded-md hover:bg-sky-50 transition-colors"
                             >
-                                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                                </svg>
+                                <Menu className="h-6 w-6" />
                             </button>
                         </div>
                         <div className="flex items-center justify-end w-full lg:w-auto">
@@ -188,7 +195,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 </header>
 
                 <main className="flex-1 relative overflow-y-auto focus:outline-none p-4 sm:p-6 lg:p-8">
-                    <div className="max-w-7xl mx-auto">
+                    <div className="max-w-full h-full">
                         {children}
                     </div>
                 </main>
