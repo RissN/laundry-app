@@ -16,6 +16,59 @@ Sistem ini dikembangkan menggunakan kombinasi teknologi web modern (Full-Stack M
 
 ---
 
+## Panduan Instalasi (Setup Project) ⚙️
+
+Ikuti langkah-langkah di bawah ini untuk menjalankan project ke komputer lokal Anda:
+
+1. **Clone Repositori**
+   ```bash
+   git clone https://github.com/RissN/laundry-app.git
+   cd laundry-app
+   ```
+
+2. **Install Dependensi PHP & Node.js**
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **Konfigurasi Environment (.env)**
+   * Duplikasi file `.env.example` dan ubah namanya menjadi `.env`.
+   * Atur kredensial *Database* pada file `.env` ke nama database lokal Anda (misal `db_laundry`):
+     ```env
+     DB_CONNECTION=mysql
+     DB_HOST=127.0.0.1
+     DB_PORT=3306
+     DB_DATABASE=db_laundry
+     DB_USERNAME=root
+     DB_PASSWORD=
+     ```
+
+4. **Generate Key & Migrasi Database Eksekusi**
+   ```bash
+   php artisan key:generate
+   php artisan migrate --seed
+   ```
+   *(Harap pastikan modul MySQL pada aplikasi XAMPP Anda sudah distart dan databse tujuan telah dibuat sebelum melakukan iterasi ini).*
+
+5. **Jalankan Development Server**
+   Buka dua jendela terminal secara terpisah pada direktori project Anda:
+   * **Terminal 1** (Service PHP Backend):
+     ```bash
+     php artisan serve
+     ```
+   * **Terminal 2** (Vite / React Auto-refresh Server):
+     ```bash
+     npm run dev
+     ```
+     
+6. **Selesai!** 
+Akses `http://127.0.0.1:8000` di web browser Anda dan login dengan akun default Administrator: 
+   * **Email**: `admin@laundry.com`
+   * **Password**: `password`
+
+---
+
 ## 1. Alur Kerja (Workflow) Program Utama
 
 Sistem ini membagi wewenang berdasarkan tiga jenis hak akses (Role): **Admin**, **Operator**, dan **Pimpinan**.
