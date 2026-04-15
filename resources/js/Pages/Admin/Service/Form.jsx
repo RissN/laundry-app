@@ -30,7 +30,7 @@ export default function Form({ service }) {
                             type="text"
                             value={data.service_name}
                             onChange={(e) => setData('service_name', e.target.value)}
-                            className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-gray-50 focus:bg-white text-gray-800 transition-colors px-4 py-3"
+                            className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 bg-gray-50 focus:bg-white text-gray-800 transition-colors px-4 py-3"
                             placeholder="Contoh: Cuci Komplit"
                         />
                         {errors.service_name && <p className="mt-1.5 text-sm text-red-500 font-medium animate-pulse">{errors.service_name}</p>}
@@ -46,7 +46,7 @@ export default function Form({ service }) {
                                 type="number"
                                 value={data.price}
                                 onChange={(e) => setData('price', e.target.value)}
-                                className="block w-full pl-12 rounded-xl border-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-gray-50 focus:bg-white text-gray-800 transition-colors px-4 py-3"
+                                className="block w-full pl-12 rounded-xl border-gray-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 bg-gray-50 focus:bg-white text-gray-800 transition-colors px-4 py-3"
                                 placeholder="5000"
                             />
                         </div>
@@ -59,14 +59,14 @@ export default function Form({ service }) {
                             rows="4"
                             value={data.description}
                             onChange={(e) => setData('description', e.target.value)}
-                            className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-gray-50 focus:bg-white text-gray-800 transition-colors px-4 py-3 resize-none"
+                            className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 bg-gray-50 focus:bg-white text-gray-800 transition-colors px-4 py-3 resize-none"
                             placeholder="Contoh: Harga per kilogram sudah termasuk parfum"
                         />
                         {errors.description && <p className="mt-1.5 text-sm text-red-500 font-medium animate-pulse">{errors.description}</p>}
                     </div>
 
                     <div className="flex items-center space-x-3 pt-6 mt-6 border-t border-gray-100">
-                        <button type="submit" disabled={processing} className="px-6 py-2.5 bg-indigo-600 font-medium text-white tracking-wide rounded-xl shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-all">
+                        <button type="submit" disabled={processing} className="px-6 py-2.5 bg-sky-600 font-medium text-white tracking-wide rounded-xl shadow-sm hover:bg-sky-700 focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 disabled:opacity-50 transition-all">
                             {isEdit ? 'Update Layanan' : 'Simpan Layanan'}
                         </button>
                         <Link href={route('admin.services.index')} className="px-6 py-2.5 bg-white border border-gray-200 shadow-sm text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-all">

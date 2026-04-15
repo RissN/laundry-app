@@ -13,12 +13,12 @@ export default function Dashboard({ stats }) {
             <Head title="Dashboard" />
 
             <div className="py-4">
-                <div className="bg-gradient-to-r from-indigo-900 to-indigo-700 overflow-hidden shadow-xl sm:rounded-3xl relative">
+                <div className="bg-gradient-to-r from-sky-900 to-sky-700 overflow-hidden shadow-xl sm:rounded-3xl relative">
                     <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white opacity-5 blur-3xl"></div>
-                    <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 rounded-full bg-indigo-500 opacity-20 blur-3xl"></div>
+                    <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 rounded-full bg-sky-500 opacity-20 blur-3xl"></div>
                     <div className="p-8 text-white relative z-10">
                         <h2 className="text-3xl font-black mb-2">Selamat Datang, {user.name}!</h2>
-                        <p className="text-indigo-200">Anda login sebagai {user.level?.level_name || 'Administrator'}</p>
+                        <p className="text-sky-200">Anda login sebagai {user.level?.level_name || 'Administrator'}</p>
                     </div>
                 </div>
 

@@ -27,14 +27,14 @@ export default function Index({ orders, totalRevenue, filters }) {
             
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-2xl p-6 shadow-indigo-500/20 shadow-lg relative overflow-hidden">
+                <div className="bg-gradient-to-br from-sky-600 to-sky-800 rounded-2xl p-6 shadow-sky-500/20 shadow-lg relative overflow-hidden">
                     <div className="relative z-10">
-                        <p className="text-indigo-100 font-medium tracking-wide uppercase text-xs mb-1">Total Pendapatan</p>
+                        <p className="text-sky-100 font-medium tracking-wide uppercase text-xs mb-1">Total Pendapatan</p>
                         <h3 className="text-white text-4xl font-black">{formatCurrency(totalRevenue)}</h3>
                         {filters.start_date || filters.end_date ? (
-                            <p className="text-indigo-200 text-sm mt-3 font-medium">Berdasarkan filter tanggal yang dipilih</p>
+                            <p className="text-sky-200 text-sm mt-3 font-medium">Berdasarkan filter tanggal yang dipilih</p>
                         ) : (
-                            <p className="text-indigo-200 text-sm mt-3 font-medium">Dari semua transaksi yang selesai</p>
+                            <p className="text-sky-200 text-sm mt-3 font-medium">Dari semua transaksi yang selesai</p>
                         )}
                     </div>
                     {/* Decorative */}
@@ -50,7 +50,7 @@ export default function Index({ orders, totalRevenue, filters }) {
                                 type="date" 
                                 value={data.start_date}
                                 onChange={e => setData('start_date', e.target.value)}
-                                className="w-full bg-gray-50 text-gray-700 border border-gray-200 rounded-xl py-2 px-4 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-sm transition-all"
+                                className="w-full bg-gray-50 text-gray-700 border border-gray-200 rounded-xl py-2 px-4 focus:outline-none focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-500 shadow-sm transition-all"
                             />
                         </div>
                         <div className="flex-1 w-full relative">
@@ -59,11 +59,11 @@ export default function Index({ orders, totalRevenue, filters }) {
                                 type="date" 
                                 value={data.end_date}
                                 onChange={e => setData('end_date', e.target.value)}
-                                className="w-full bg-gray-50 text-gray-700 border border-gray-200 rounded-xl py-2 px-4 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-sm transition-all"
+                                className="w-full bg-gray-50 text-gray-700 border border-gray-200 rounded-xl py-2 px-4 focus:outline-none focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-500 shadow-sm transition-all"
                             />
                         </div>
                         <div className="flex gap-2 w-full sm:w-auto">
-                            <button type="submit" disabled={processing} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-sm transition-colors cursor-pointer text-sm">
+                            <button type="submit" disabled={processing} className="flex-1 bg-sky-600 hover:bg-sky-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-sm transition-colors cursor-pointer text-sm">
                                 Filter
                             </button>
                             {(filters.start_date || filters.end_date) && (
@@ -91,7 +91,7 @@ export default function Index({ orders, totalRevenue, filters }) {
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {orders.data.map(order => (
-                                <tr key={order.id} className="hover:bg-indigo-50/30 transition duration-150">
+                                <tr key={order.id} className="hover:bg-sky-50/30 transition duration-150">
                                     <td className="px-6 py-4">
                                         <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${order.order_status === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-200'}`}>
                                             {order.order_status === 1 ? 'Selesai' : 'Diproses'}

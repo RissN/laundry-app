@@ -58,7 +58,7 @@ export default function Create({ customers, services }) {
                         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                             <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
                                 <h3 className="text-lg font-bold text-gray-800">1. Data Pelanggan</h3>
-                                <button type="button" onClick={() => setIsNewCustomer(!isNewCustomer)} className="text-sm text-indigo-600 font-semibold hover:text-indigo-800">
+                                <button type="button" onClick={() => setIsNewCustomer(!isNewCustomer)} className="text-sm text-sky-600 font-semibold hover:text-sky-800">
                                     {isNewCustomer ? 'Pilih Pelanggan Lama' : '+ Pelanggan Baru'}
                                 </button>
                             </div>
@@ -69,7 +69,7 @@ export default function Create({ customers, services }) {
                                     <select
                                         value={data.id_customer}
                                         onChange={(e) => setData('id_customer', e.target.value)}
-                                        className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-gray-50 focus:bg-white text-gray-800 px-4 py-3"
+                                        className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 bg-gray-50 focus:bg-white text-gray-800 px-4 py-3"
                                     >
                                         <option value="">-- Cari atau Pilih Pelanggan --</option>
                                         {customers.map(c => (
@@ -79,14 +79,14 @@ export default function Create({ customers, services }) {
                                     {errors.id_customer && <p className="mt-1 text-sm text-red-500 font-medium">{errors.id_customer}</p>}
                                 </div>
                             ) : (
-                                <div className="space-y-4 bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
+                                <div className="space-y-4 bg-sky-50/50 p-4 rounded-xl border border-sky-100">
                                     <div>
                                         <label className="block text-xs font-bold tracking-wider text-gray-700 uppercase mb-2">Nama Pelanggan Baru</label>
                                         <input
                                             type="text"
                                             value={data.new_customer_name}
                                             onChange={(e) => setData('new_customer_name', e.target.value)}
-                                            className="block w-full rounded-xl border-indigo-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
+                                            className="block w-full rounded-xl border-sky-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 px-4 py-2"
                                         />
                                         {errors.new_customer_name && <p className="mt-1 text-xs text-red-500 font-medium">{errors.new_customer_name}</p>}
                                     </div>
@@ -96,7 +96,7 @@ export default function Create({ customers, services }) {
                                             type="text"
                                             value={data.new_customer_phone}
                                             onChange={(e) => setData('new_customer_phone', e.target.value)}
-                                            className="block w-full rounded-xl border-indigo-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
+                                            className="block w-full rounded-xl border-sky-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 px-4 py-2"
                                         />
                                         {errors.new_customer_phone && <p className="mt-1 text-xs text-red-500 font-medium">{errors.new_customer_phone}</p>}
                                     </div>
@@ -106,7 +106,7 @@ export default function Create({ customers, services }) {
                                             rows="2"
                                             value={data.new_customer_address}
                                             onChange={(e) => setData('new_customer_address', e.target.value)}
-                                            className="block w-full rounded-xl border-indigo-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2"
+                                            className="block w-full rounded-xl border-sky-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 px-4 py-2"
                                         />
                                         {errors.new_customer_address && <p className="mt-1 text-xs text-red-500 font-medium">{errors.new_customer_address}</p>}
                                     </div>
@@ -137,7 +137,7 @@ export default function Create({ customers, services }) {
                                                 <select
                                                     value={item.id_service}
                                                     onChange={(e) => handleItemChange(index, 'id_service', e.target.value)}
-                                                    className="w-full rounded-lg border-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-2 px-3"
+                                                    className="w-full rounded-lg border-gray-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3"
                                                 >
                                                     <option value="">-- Layanan --</option>
                                                     {services.map(s => <option key={s.id} value={s.id}>{s.service_name}</option>)}
@@ -153,7 +153,7 @@ export default function Create({ customers, services }) {
                                                     min="1"
                                                     value={item.qty}
                                                     onChange={(e) => handleItemChange(index, 'qty', e.target.value)}
-                                                    className="w-full rounded-lg border-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-2 px-3"
+                                                    className="w-full rounded-lg border-gray-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3"
                                                 />
                                             </div>
                                             <div className="flex-1 w-full">
@@ -162,12 +162,12 @@ export default function Create({ customers, services }) {
                                                     type="text"
                                                     value={item.notes}
                                                     onChange={(e) => handleItemChange(index, 'notes', e.target.value)}
-                                                    className="w-full rounded-lg border-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-2 px-3"
+                                                    className="w-full rounded-lg border-gray-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3"
                                                     placeholder="Contoh: Jangan terlalu wangi"
                                                 />
                                             </div>
-                                            <div className="w-full sm:w-32 bg-indigo-50 px-4 py-2 rounded-lg border border-indigo-100 flex items-center justify-end h-[38px]">
-                                                <span className="font-bold text-indigo-700">{formatCurrency(subtotal)}</span>
+                                            <div className="w-full sm:w-32 bg-sky-50 px-4 py-2 rounded-lg border border-sky-100 flex items-center justify-end h-[38px]">
+                                                <span className="font-bold text-sky-700">{formatCurrency(subtotal)}</span>
                                             </div>
                                         </div>
                                     );
@@ -184,18 +184,18 @@ export default function Create({ customers, services }) {
 
                 {/* Sidebar Summary */}
                 <div className="lg:col-span-1">
-                    <div className="bg-gradient-to-br from-indigo-900 to-indigo-800 rounded-2xl shadow-lg sticky top-6 overflow-hidden">
+                    <div className="bg-gradient-to-br from-sky-900 to-sky-800 rounded-2xl shadow-lg sticky top-6 overflow-hidden">
                         <div className="p-6">
                             <h3 className="text-xl font-bold text-white mb-6">Ringkasan Transaksi</h3>
-                            <div className="space-y-4 border-b border-indigo-700/50 pb-6 mb-6">
+                            <div className="space-y-4 border-b border-sky-700/50 pb-6 mb-6">
                                 {data.items.map((item, index) => {
                                     const service = services.find(s => s.id == item.id_service);
                                     if (!service) return null;
                                     return (
-                                        <div key={index} className="flex justify-between text-indigo-100 text-sm">
+                                        <div key={index} className="flex justify-between text-sky-100 text-sm">
                                             <div className="flex-1">
                                                 <p className="font-medium">{service.service_name}</p>
-                                                <p className="text-indigo-300 text-xs">{item.qty} kg × {formatCurrency(service.price)}</p>
+                                                <p className="text-sky-300 text-xs">{item.qty} kg × {formatCurrency(service.price)}</p>
                                             </div>
                                             <span className="font-bold text-white relative top-2">
                                                 {formatCurrency(service.price * item.qty)}
@@ -206,7 +206,7 @@ export default function Create({ customers, services }) {
                             </div>
                             
                             <div className="flex flex-col mb-8">
-                                <span className="text-indigo-200 text-sm mb-1 uppercase tracking-wider font-semibold">Total Tagihan</span>
+                                <span className="text-sky-200 text-sm mb-1 uppercase tracking-wider font-semibold">Total Tagihan</span>
                                 <span className="text-4xl font-black text-white">{formatCurrency(calculateTotal())}</span>
                             </div>
 
@@ -221,7 +221,7 @@ export default function Create({ customers, services }) {
                         </div>
                         {/* decorative element */}
                         <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-white opacity-5 blur-2xl"></div>
-                        <div className="absolute bottom-0 left-0 -ml-8 -mb-8 w-32 h-32 rounded-full bg-indigo-500 opacity-20 blur-2xl"></div>
+                        <div className="absolute bottom-0 left-0 -ml-8 -mb-8 w-32 h-32 rounded-full bg-sky-500 opacity-20 blur-2xl"></div>
                     </div>
                 </div>
             </div>

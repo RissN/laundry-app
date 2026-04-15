@@ -59,9 +59,9 @@ export default function Index({ orders }) {
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {orders.data.map(order => (
-                                <tr key={order.id} className="hover:bg-indigo-50/30 transition duration-150">
+                                <tr key={order.id} className="hover:bg-sky-50/30 transition duration-150">
                                     <td className="px-6 py-4">
-                                        <div className="font-mono font-bold text-indigo-700 bg-indigo-50 inline-block px-2 py-1 rounded inline-flex items-center">
+                                        <div className="font-mono font-bold text-sky-700 bg-sky-50 inline-block px-2 py-1 rounded inline-flex items-center">
                                             {order.order_code}
                                         </div>
                                     </td>
@@ -133,7 +133,7 @@ export default function Index({ orders }) {
                                         min={selectedOrder.total}
                                         value={data.order_pay}
                                         onChange={(e) => setData('order_pay', e.target.value)}
-                                        className="block w-full pl-12 rounded-xl border-gray-200 shadow-sm focus:border-indigo-500 focus:border-2 focus:ring-0 bg-gray-50 focus:bg-white text-gray-800 text-lg font-bold px-4 py-3"
+                                        className="block w-full pl-12 rounded-xl border-gray-200 shadow-sm focus:border-sky-500 focus:border-2 focus:ring-0 bg-gray-50 focus:bg-white text-gray-800 text-lg font-bold px-4 py-3"
                                         placeholder="0"
                                         autoFocus
                                     />
@@ -141,9 +141,9 @@ export default function Index({ orders }) {
                                 {errors.order_pay && <p className="mt-1.5 text-sm leading-tight text-red-500 font-medium">{errors.order_pay}</p>}
                             </div>
 
-                            <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex justify-between items-center transition-all bg-opacity-50">
-                                <span className="text-indigo-800 text-sm font-bold uppercase tracking-wider block">Kembalian</span>
-                                <span className={`text-2xl font-black tracking-tight ${change >= 0 ? 'text-indigo-600' : 'text-red-500'}`}>
+                            <div className="bg-sky-50 border border-sky-100 rounded-xl p-4 flex justify-between items-center transition-all bg-opacity-50">
+                                <span className="text-sky-800 text-sm font-bold uppercase tracking-wider block">Kembalian</span>
+                                <span className={`text-2xl font-black tracking-tight ${change >= 0 ? 'text-sky-600' : 'text-red-500'}`}>
                                     {formatCurrency(change)}
                                 </span>
                             </div>
@@ -154,7 +154,7 @@ export default function Index({ orders }) {
                                     rows="2"
                                     value={data.notes}
                                     onChange={(e) => setData('notes', e.target.value)}
-                                    className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-gray-50 focus:bg-white text-gray-800 transition-colors px-4 py-2 resize-none text-sm"
+                                    className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 bg-gray-50 focus:bg-white text-gray-800 transition-colors px-4 py-2 resize-none text-sm"
                                     placeholder="Contoh: Diambil oleh kerabatnya"
                                 />
                                 {errors.notes && <p className="mt-1.5 text-sm text-red-500 font-medium animate-pulse">{errors.notes}</p>}

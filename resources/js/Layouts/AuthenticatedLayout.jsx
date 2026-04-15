@@ -29,28 +29,28 @@ export default function AuthenticatedLayout({ header, children }) {
             {/* Mobile Sidebar Overlay */}
             {isSidebarOpen && (
                 <div 
-                    className="fixed inset-0 bg-indigo-900/50 backdrop-blur-sm z-20 lg:hidden"
+                    className="fixed inset-0 bg-sky-900/50 backdrop-blur-sm z-20 lg:hidden"
                     onClick={() => setIsSidebarOpen(false)}
                 ></div>
             )}
 
             {/* Sidebar */}
-            <aside className={`fixed inset-y-0 left-0 bg-indigo-900 text-white w-64 shadow-xl z-30 transition-transform duration-300 flex flex-col ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:flex-shrink-0`}>
-                <div className="flex items-center justify-center h-20 border-b border-indigo-800/50 flex-shrink-0">
+            <aside className={`fixed inset-y-0 left-0 bg-sky-900 text-white w-64 shadow-xl z-30 transition-transform duration-300 flex flex-col ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:flex-shrink-0`}>
+                <div className="flex items-center justify-center h-20 border-b border-sky-800/50 flex-shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="bg-white p-2 rounded-xl shadow-sm">
-                            <span className="text-indigo-900 font-bold text-xl px-1">🧺</span>
+                            <span className="text-sky-900 font-bold text-xl px-1">🧺</span>
                         </div>
                         <div>
                             <h1 className="text-xl font-bold font-sans tracking-wide">LaundriQ</h1>
-                            <p className="text-[10px] text-indigo-300 tracking-widest uppercase font-bold">Workspace</p>
+                            <p className="text-[10px] text-sky-300 tracking-widest uppercase font-bold">Workspace</p>
                         </div>
                     </div>
                 </div>
 
                 <div className="p-5 flex-1 overflow-y-auto relative scrollbar-hide">
-                    <div className="bg-indigo-800/40 rounded-xl p-4 mb-6 border border-indigo-700/50">
-                        <p className="text-[10px] text-indigo-300 uppercase font-bold tracking-wider mb-1">Akun Anda</p>
+                    <div className="bg-sky-800/40 rounded-xl p-4 mb-6 border border-sky-700/50">
+                        <p className="text-[10px] text-sky-300 uppercase font-bold tracking-wider mb-1">Akun Anda</p>
                         <p className="font-semibold text-white truncate text-sm">{user.name}</p>
                         <div className="inline-flex mt-2 items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-emerald-400/20 text-emerald-400 border border-emerald-400/30 uppercase">
                             {getRoleName(user.id_level)}
@@ -58,18 +58,18 @@ export default function AuthenticatedLayout({ header, children }) {
                     </div>
 
                     <nav className="space-y-1.5 focus:outline-none">
-                        <p className="px-2 text-[10px] font-bold uppercase tracking-wider text-indigo-400 mb-2 mt-4">Menu Navigasi</p>
+                        <p className="px-2 text-[10px] font-bold uppercase tracking-wider text-sky-400 mb-2 mt-4">Menu Navigasi</p>
                         {currentLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 href={route(link.route)}
                                 className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group ${
                                     route().current(link.route)
-                                        ? 'bg-indigo-600 text-white shadow shadow-indigo-900/20 ring-1 ring-white/10'
-                                        : 'text-indigo-200 hover:bg-indigo-800/60 hover:text-white'
+                                        ? 'bg-sky-600 text-white shadow shadow-sky-900/20 ring-1 ring-white/10'
+                                        : 'text-sky-200 hover:bg-sky-800/60 hover:text-white'
                                 }`}
                             >
-                                <svg className={`mr-3 h-5 w-5 flex-shrink-0 transition-colors ${route().current(link.route) ? 'text-white' : 'text-indigo-400 group-hover:text-indigo-300'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg className={`mr-3 h-5 w-5 flex-shrink-0 transition-colors ${route().current(link.route) ? 'text-white' : 'text-sky-400 group-hover:text-sky-300'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={link.icon} />
                                 </svg>
                                 {link.name}
@@ -78,7 +78,7 @@ export default function AuthenticatedLayout({ header, children }) {
                     </nav>
                 </div>
                 
-                <div className="p-4 border-t border-indigo-800/50 flex-shrink-0 bg-indigo-900/50">
+                <div className="p-4 border-t border-sky-800/50 flex-shrink-0 bg-sky-900/50">
                     <Link
                         href={route('logout')}
                         method="post"
@@ -100,7 +100,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         <div className="flex items-center lg:hidden">
                             <button
                                 onClick={() => setIsSidebarOpen(true)}
-                                className="text-gray-500 hover:text-indigo-600 focus:outline-none p-2 rounded-md hover:bg-indigo-50 transition-colors"
+                                className="text-gray-500 hover:text-sky-600 focus:outline-none p-2 rounded-md hover:bg-sky-50 transition-colors"
                             >
                                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
