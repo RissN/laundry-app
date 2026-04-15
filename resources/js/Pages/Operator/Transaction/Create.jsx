@@ -41,7 +41,22 @@ export default function Create({ customers, services }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('operator.transaction.store'));
+        import('sweetalert2').then((Swal) => {
+            Swal.default.fire({
+                title: 'Proses Transaksi?',
+                text: "Pastikan data pelanggan dan layanan sudah benar.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#0ea5e9',
+                cancelButtonColor: '#f43f5e',
+                confirmButtonText: 'Ya, Proses Sekarang',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    post(route('operator.transaction.store'));
+                }
+            });
+        });
     };
 
     const formatCurrency = (amount) => {

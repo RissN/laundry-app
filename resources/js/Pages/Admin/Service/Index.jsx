@@ -5,9 +5,30 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 export default function Index({ services }) {
     const { delete: destroy } = useForm();
     const handleDelete = (id) => {
-        if(confirm('Are you sure you want to delete this service?')) {
-            destroy(route('admin.services.destroy', id));
-        }
+        import('sweetalert2').then((Swal) => {
+            Swal.default.fire({
+                title: 'Hapus Layanan?',
+                text: "Data layanan ini akan dihapus secara permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0ea5e9',
+                cancelButtonColor: '#f43f5e',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    destroy(route('admin.services.destroy', id), {
+                        onSuccess: () => {
+                            Swal.default.fire(
+                                'Terhapus!',
+                                'Layanan telah berhasil dihapus.',
+                                'success'
+                            )
+                        }
+                    });
+                }
+            });
+        });
     }
 
     const formatCurrency = (amount) => {

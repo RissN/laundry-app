@@ -28,8 +28,26 @@ export default function Index({ orders }) {
 
     const handlePayment = (e) => {
         e.preventDefault();
-        post(route('operator.pickup.store', selectedOrder.id), {
-            onSuccess: () => closeModal()
+        import('sweetalert2').then((Swal) => {
+            Swal.default.fire({
+                title: 'Selesaikan Pembayaran?',
+                text: `Konfirmasi pembayaran untuk order ${selectedOrder.order_code}.`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#0ea5e9',
+                cancelButtonColor: '#f43f5e',
+                confirmButtonText: 'Ya, Bayar & Ambil',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    post(route('operator.pickup.store', selectedOrder.id), {
+                        onSuccess: () => {
+                            closeModal();
+                            Swal.default.fire('Selesai!', 'Transaksi telah berhasil diselesaikan.', 'success');
+                        }
+                    });
+                }
+            });
         });
     }
 

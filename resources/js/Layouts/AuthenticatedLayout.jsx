@@ -1,9 +1,36 @@
-import { useState } from 'react';
-import { Link, usePage } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
+import { Link, usePage, router } from '@inertiajs/react';
+import Swal from 'sweetalert2';
 
 export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
+    const { auth, flash } = usePage().props;
+    const user = auth.user;
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    useEffect(() => {
+        if (flash.success) {
+            Swal.fire({
+                title: 'Berhasil!',
+                text: flash.success,
+                icon: 'success',
+                timer: 3000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end',
+                timerProgressBar: true,
+            });
+        }
+        if (flash.error) {
+            Swal.fire({
+                title: 'Gagal!',
+                text: flash.error,
+                icon: 'error',
+                timer: 4000,
+                showConfirmButton: true,
+                confirmButtonColor: '#0ea5e9',
+            });
+        }
+    }, [flash]);
 
     const getRoleName = (levelId) => {
         if (levelId === 1) return 'Administrator';
@@ -23,6 +50,24 @@ export default function AuthenticatedLayout({ header, children }) {
     ];
 
     const currentLinks = navLinks.filter(link => link.allowed.includes(user.id_level));
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Keluar Sistem?',
+            text: "Anda akan keluar dari sesi ini.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#0ea5e9',
+            cancelButtonColor: '#f43f5e',
+            confirmButtonText: 'Ya, Logout',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.post(route('logout'));
+            }
+        });
+    };
 
     return (
         <div className="h-screen flex overflow-hidden bg-gray-50">
@@ -79,17 +124,15 @@ export default function AuthenticatedLayout({ header, children }) {
                 </div>
                 
                 <div className="p-4 border-t border-sky-800/50 flex-shrink-0 bg-sky-900/50">
-                    <Link
-                        href={route('logout')}
-                        method="post"
-                        as="button"
+                    <button
+                        onClick={handleLogout}
                         className="flex w-full items-center justify-center px-4 py-2.5 text-sm font-bold tracking-wide text-red-200 bg-red-500/10 rounded-lg hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-500/20 transition-all border border-red-500/20 hover:border-red-500"
                     >
                         <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
                         LOGOUT SISTEM
-                    </Link>
+                    </button>
                 </div>
             </aside>
 
@@ -117,35 +160,6 @@ export default function AuthenticatedLayout({ header, children }) {
 
                 <main className="flex-1 relative overflow-y-auto focus:outline-none p-4 sm:p-6 lg:p-8">
                     <div className="max-w-7xl mx-auto">
-                        {usePage().props.flash?.success && (
-                            <div className="mb-6 bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-md shadow-sm">
-                                <div className="flex items-center">
-                                    <div className="flex-shrink-0">
-                                        <svg className="h-5 w-5 text-emerald-400" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                        </svg>
-                                    </div>
-                                    <div className="ml-3">
-                                        <p className="text-sm font-medium text-emerald-800">{usePage().props.flash.success}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                        {usePage().props.flash?.error && (
-                            <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-md shadow-sm">
-                                <div className="flex items-center">
-                                    <div className="flex-shrink-0">
-                                        <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                        </svg>
-                                    </div>
-                                    <div className="ml-3">
-                                        <p className="text-sm font-medium text-red-800">{usePage().props.flash.error}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                        
                         {children}
                     </div>
                 </main>

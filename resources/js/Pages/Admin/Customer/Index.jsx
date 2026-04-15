@@ -5,9 +5,30 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 export default function Index({ customers }) {
     const { delete: destroy } = useForm();
     const handleDelete = (id) => {
-        if(confirm('Are you sure you want to delete this customer?')) {
-            destroy(route('admin.customers.destroy', id));
-        }
+        import('sweetalert2').then((Swal) => {
+            Swal.default.fire({
+                title: 'Hapus Customer?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0ea5e9',
+                cancelButtonColor: '#f43f5e',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    destroy(route('admin.customers.destroy', id), {
+                        onSuccess: () => {
+                            Swal.default.fire(
+                                'Terhapus!',
+                                'Data customer telah berhasil dihapus.',
+                                'success'
+                            )
+                        }
+                    });
+                }
+            });
+        });
     }
     return (
         <AuthenticatedLayout header="Data Customer">

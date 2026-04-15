@@ -5,9 +5,30 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 export default function Index({ users }) {
     const { delete: destroy } = useForm();
     const handleDelete = (id) => {
-        if(confirm('Are you sure you want to delete this user?')) {
-            destroy(route('admin.users.destroy', id));
-        }
+        import('sweetalert2').then((Swal) => {
+            Swal.default.fire({
+                title: 'Hapus User?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0ea5e9',
+                cancelButtonColor: '#f43f5e',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    destroy(route('admin.users.destroy', id), {
+                        onSuccess: () => {
+                            Swal.default.fire(
+                                'Terhapus!',
+                                'Data user telah berhasil dihapus.',
+                                'success'
+                            )
+                        }
+                    });
+                }
+            });
+        });
     }
     return (
         <AuthenticatedLayout header="Data User">
