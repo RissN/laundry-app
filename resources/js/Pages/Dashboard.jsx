@@ -31,7 +31,7 @@ export default function Dashboard({ stats, extraData }) {
 
             <div className="py-2 space-y-6">
                 {/* Welcome Banner - Refined Blue Theme */}
-                <div className="bg-slate-900 overflow-hidden shadow-lg rounded-2xl relative">
+                <div className="bg-sky-600 overflow-hidden shadow-lg rounded-2xl relative">
                     {/* Decorative Patterns */}
                     <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-sky-500/10 to-transparent"></div>
                     <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-sky-500/20 blur-3xl"></div>
@@ -43,7 +43,7 @@ export default function Dashboard({ stats, extraData }) {
                                 System Operational
                             </div>
                             <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Halo, {user.name.split(' ')[0]}!</h2>
-                            <p className="text-slate-300 text-sm md:text-base font-medium max-w-md">
+                            <p className="text-sky-100 text-sm md:text-base font-medium max-w-md">
                                 Selamat bertugas sebagai <span className="text-white font-semibold">{user.level?.level_name || 'Staff'}</span> hari ini.
                             </p>
                         </div>
@@ -53,7 +53,7 @@ export default function Dashboard({ stats, extraData }) {
                                 <Calendar size={18} />
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sesi Aktif</p>
+                                <p className="text-[10px] font-bold text-sky-100/70 uppercase tracking-widest">Sesi Aktif</p>
                                 <p className="text-base font-bold text-white">{new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' })}</p>
                             </div>
                         </div>

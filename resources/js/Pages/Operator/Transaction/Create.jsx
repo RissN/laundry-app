@@ -44,16 +44,22 @@ export default function Create({ customers, services }) {
         setData('items', newItems);
     };
 
-    const calculateTotal = () => {
-        let total = 0;
+    const TAX_RATE = 0.10;
+
+    const calculateTotals = () => {
+        let subtotal = 0;
         data.items.forEach(item => {
             const service = services.find(s => s.id == item.id_service);
             if(service && item.qty) {
-                total += service.price * item.qty;
+                subtotal += service.price * Number(item.qty);
             }
         });
-        return total;
+        const tax = Math.round(subtotal * TAX_RATE);
+        const total = subtotal + tax;
+        return { subtotal, tax, total };
     };
+
+    const totals = calculateTotals();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -334,20 +340,29 @@ export default function Create({ customers, services }) {
                             {/* Calculation Details */}
                             <div className="space-y-4 mb-10 pt-8 border-t border-dashed border-sky-200">
                                 <form onSubmit={handleSubmit}>
-                                    <div className="flex flex-col gap-2 mb-10">
-                                        <div className="flex justify-between items-center mb-2">
+                                    <div className="flex flex-col gap-3 mb-8">
+                                        <div className="flex justify-between items-center text-slate-500">
+                                            <span className="text-[10px] font-black uppercase tracking-wider">Subtotal</span>
+                                            <span className="font-bold">{formatCurrency(totals.subtotal)}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center text-slate-500">
+                                            <span className="text-[10px] font-black uppercase tracking-wider">Pajak ({TAX_RATE * 100}%)</span>
+                                            <span className="font-bold">{formatCurrency(totals.tax)}</span>
+                                        </div>
+                                        
+                                        <div className="flex justify-between items-center mt-4 mb-2">
                                             <span className="text-slate-400 text-[9px] font-black uppercase tracking-[0.2em]">Total Bill Amount</span>
                                             <div className="h-px bg-sky-100 flex-1 mx-4"></div>
                                         </div>
                                         <div className="text-5xl font-black text-slate-900 tracking-tighter leading-none flex items-baseline">
                                             <span className="text-2xl mr-1 text-sky-500">Rp</span>
-                                            {calculateTotal().toLocaleString('id-ID')}
+                                            {totals.total.toLocaleString('id-ID')}
                                         </div>
                                     </div>
 
                                     <button 
                                         type="submit" 
-                                        disabled={processing || calculateTotal() === 0 || (!data.id_customer && !isNewCustomer)}
+                                        disabled={processing || totals.total === 0 || (!data.id_customer && !isNewCustomer)}
                                         className="group w-full bg-sky-600 hover:bg-sky-700 text-white py-5 rounded-2xl font-black text-sm shadow-lg shadow-sky-200 transition-all active:scale-[0.98] disabled:opacity-30 disabled:grayscale flex items-center justify-center gap-3 uppercase tracking-widest overflow-hidden relative"
                                     >
                                         {processing ? (

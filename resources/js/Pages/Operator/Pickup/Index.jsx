@@ -134,9 +134,19 @@ export default function Index({ orders }) {
                             </button>
                         </div>
                         
-                        <div className="bg-rose-50 rounded-xl p-4 mb-6 border border-rose-100">
-                            <span className="text-rose-800 text-sm font-bold uppercase tracking-wider block mb-1">Tagihan</span>
-                            <span className="text-4xl font-black text-rose-600 tracking-tight">{formatCurrency(selectedOrder.total)}</span>
+                        <div className="bg-rose-50 rounded-xl p-5 mb-6 border border-rose-100 space-y-3">
+                            <div className="flex justify-between items-center text-rose-800 text-xs font-bold uppercase tracking-wider">
+                                <span>Subtotal</span>
+                                <span>{formatCurrency(selectedOrder.total - selectedOrder.tax)}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-rose-800 text-xs font-bold uppercase tracking-wider">
+                                <span>Pajak (10%)</span>
+                                <span>{formatCurrency(selectedOrder.tax)}</span>
+                            </div>
+                            <div className="pt-3 border-t border-rose-200 flex justify-between items-baseline">
+                                <span className="text-rose-900 text-sm font-black uppercase tracking-widest">Grand Total</span>
+                                <span className="text-4xl font-black text-rose-600 tracking-tight">{formatCurrency(selectedOrder.total)}</span>
+                            </div>
                         </div>
 
                         <form onSubmit={handlePayment} className="space-y-5">

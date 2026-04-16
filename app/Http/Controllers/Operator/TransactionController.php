@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
+    const TAX_RATE = 0.10;
+
     public function create()
     {
         $customers = Customer::all();
@@ -51,13 +53,13 @@ class TransactionController extends Controller
             $number = $latestOrder ? intval(substr($latestOrder->order_code, -3)) + 1 : 1;
             $orderCode = 'ORD-' . $today . '-' . str_pad($number, 3, '0', STR_PAD_LEFT);
 
-            // Calculate total
-            $total = 0;
+            // Calculate subtotal and tax
+            $subtotalAll = 0;
             $detailsData = [];
             foreach ($request->items as $item) {
                 $service = TypeOfService::findOrFail($item['id_service']);
                 $subtotal = $service->price * $item['qty'];
-                $total += $subtotal;
+                $subtotalAll += $subtotal;
                 $detailsData[] = [
                     'id_service' => $service->id,
                     'qty' => $item['qty'],
@@ -66,13 +68,18 @@ class TransactionController extends Controller
                 ];
             }
 
+            $taxRate = self::TAX_RATE;
+            $taxAmount = round($subtotalAll * $taxRate);
+            $grandTotal = $subtotalAll + $taxAmount;
+
             // Create Order
             $order = TransOrder::create([
                 'id_customer' => $customerId,
                 'order_code' => $orderCode,
                 'order_date' => date('Y-m-d'),
-                'order_status' => 0, // Baru
-                'total' => $total,
+                'order_status' => 0,
+                'tax' => $taxAmount,
+                'total' => $grandTotal,
             ]);
 
             // Create Details
