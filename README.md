@@ -111,8 +111,42 @@ import { WashingMachine, User } from 'lucide-react';
 <WashingMachine size={24} />
 ```
 
-### Konfigurasi Desain (Tailwind v4)
-Skema warna dan font diatur terpusat di `resources/css/app.css` menggunakan blok `@theme`. Anda dapat mengubah variabel font atau warna dasar di file tersebut untuk dampak global.
+### Panduan Kustomisasi Warna (Tailwind v4) 🎨
+
+Aplikasi ini menggunakan skema warna yang fleksibel melalui **Tailwind CSS v4**. Anda dapat mengubah seluruh suasana aplikasi hanya dengan memodifikasi satu file: `resources/css/app.css`.
+
+#### 1. Mengubah Warna Tema Dasar
+Buka file `resources/css/app.css` dan tambahkan variabel warna di dalam blok `@theme`. Misalnya, jika Anda ingin mengubah warna **Sky** (Biru) menjadi **Indigo** (Ungu Kebiruan):
+
+```css
+@theme {
+    /* Mengganti palet warna default Sky dengan Indigo */
+    --color-sky-50: var(--color-indigo-50);
+    --color-sky-500: var(--color-indigo-500);
+    --color-sky-900: var(--color-indigo-900);
+    
+    /* Atau mendefinisikan warna kustom sendiri */
+    --color-primary-brand: #2563eb;
+}
+```
+
+#### 2. Palet Warna yang Digunakan
+Sistem ini secara default menggunakan:
+- **Sky**: Sebagai warna utama (Sidebar, tombol primer, link aktif).
+- **Slate**: Sebagai warna netral (Teks, ikon, background sekunder).
+- **Emerald**: Sebagai indikator sukses/status positif.
+- **Rose**: Sebagai indikator error/bahaya/logout.
+
+#### 3. Cara Menggunakan Warna Baru
+Setelah Anda mendefinisikan atau mengganti variabel di `@theme`, Anda bisa langsung menggunakannya di komponen React (`.jsx`) menggunakan utility classes standar Tailwind:
+```jsx
+// Jika Anda menambah warna kustom --color-primary-brand
+<div className="bg-primary-brand text-white">
+    Konten dengan warna baru
+</div>
+```
+
+---
 
 ### Animasi
 Kami menggunakan plugin `tailwindcss-animate` untuk transisi halus pada kartu dan modal. Anda dapat menyesuaikan durasi dengan kelas seperti `duration-500` atau jenis animasi seperti `slide-in-from-bottom`.

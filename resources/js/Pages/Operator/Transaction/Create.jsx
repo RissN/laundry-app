@@ -212,7 +212,7 @@ export default function Create({ customers, services }) {
                                                 <button 
                                                     type="button" 
                                                     onClick={() => handleRemoveItem(index)} 
-                                                    className="absolute top-4 right-4 text-gray-300 hover:text-rose-500 transition-all hover:scale-110 p-2"
+                                                    className="absolute top-4 right-4 text-gray-400 hover:text-rose-500 bg-white/80 backdrop-blur-sm p-2 rounded-xl border border-gray-100 shadow-sm transition-all hover:scale-110 active:scale-95 z-10"
                                                     title="Batalkan Item"
                                                 >
                                                     <Trash2 size={18} />
@@ -268,7 +268,7 @@ export default function Create({ customers, services }) {
                                                 </div>
 
                                                 {/* Subtotal Display */}
-                                                <div className="xl:col-span-2 space-y-3 text-right">
+                                                <div className="xl:col-span-2 space-y-3 text-right pr-12">
                                                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 pr-1">Subtotal</label>
                                                     <div className="h-[48px] flex items-center justify-end">
                                                         <span className="text-xl font-black text-sky-600 tracking-tighter">{formatCurrency(subtotal)}</span>
