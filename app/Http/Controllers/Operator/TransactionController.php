@@ -26,7 +26,7 @@ class TransactionController extends Controller
 
     public function create()
     {
-        $customers = Customer::all();
+        $customers = Customer::withCount('orders')->get();
         $services = TypeOfService::all();
         return Inertia::render('Operator/Transaction/Create', compact('customers', 'services'));
     }
@@ -35,9 +35,9 @@ class TransactionController extends Controller
     {
         $request->validate([
             'id_customer' => 'nullable|exists:customers,id',
-            'new_customer_name' => 'required_without:id_customer|string|nullable|max:255',
-            'new_customer_phone' => 'required_without:id_customer|string|nullable|max:20',
-            'new_customer_address' => 'required_without:id_customer|string|nullable',
+            'new_customer_name' => 'required_without_all:id_customer,non_member_name|string|nullable|max:255',
+            'new_customer_phone' => 'required_without_all:id_customer,non_member_name|string|nullable|max:20',
+            'new_customer_address' => 'required_without_all:id_customer,non_member_name|string|nullable',
             'items' => 'required|array|min:1',
             'items.*.id_service' => 'required|exists:type_of_services,id',
             'items.*.qty' => 'required|numeric|min:1',
@@ -54,6 +54,8 @@ class TransactionController extends Controller
             $nonMemberName = null;
             $nonMemberPhone = null;
 
+            $isWelcomeDiscountEligible = false;
+
             if ($request->is_non_member) {
                 $nonMemberName = $request->non_member_name;
                 $nonMemberPhone = $request->non_member_phone;
@@ -66,6 +68,11 @@ class TransactionController extends Controller
                         'address' => $request->new_customer_address,
                     ]);
                     $customerId = $newCustomer->id;
+                    $isWelcomeDiscountEligible = true; // New registration always gets welcome discount
+                } else {
+                    // Check if existing customer has ever made an order
+                    $orderCount = TransOrder::where('id_customer', $customerId)->count();
+                    $isWelcomeDiscountEligible = ($orderCount === 0);
                 }
             }
 
@@ -105,7 +112,7 @@ class TransactionController extends Controller
             }
 
             $discountData = $this->discountService->calculate(
-                $isRegisteredCustomer,
+                $isWelcomeDiscountEligible,
                 $voucher !== null,
                 $totalBeforeDiscount
             );

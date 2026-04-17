@@ -103,17 +103,17 @@ export default function Create({ customers, services }) {
         const tax = Math.round(subtotalItems * TAX_RATE);
         const subtotalWithTax = subtotalItems + tax;
 
-        // Discount Logic
-        // Registered if id_customer is selected or new customer registration
-        const isRegistered = (data.id_customer !== '' || isNewCustomer) && !data.is_non_member;
+        // Welcome Discount Logic (Only for first-time members)
+        const selectedCustomer = customers.find(c => c.id == data.id_customer);
+        const isEligibleForWelcome = (isNewCustomer || (selectedCustomer && selectedCustomer.orders_count === 0)) && !data.is_non_member;
         const hasVoucher = voucherData !== null;
         
         let discountPercent = 0;
-        if (isRegistered && hasVoucher) {
+        if (isEligibleForWelcome && hasVoucher) {
             discountPercent = 15;
         } else if (hasVoucher) {
             discountPercent = 10;
-        } else if (isRegistered) {
+        } else if (isEligibleForWelcome) {
             discountPercent = 5;
         }
 
@@ -523,7 +523,9 @@ export default function Create({ customers, services }) {
                                         
                                         {totals.discountPercent > 0 && (
                                             <div className="flex justify-between items-center text-emerald-600">
-                                                <span className="text-[10px] font-black uppercase tracking-wider">Diskon Member/Voucher ({totals.discountPercent}%)</span>
+                                                <span className="text-[10px] font-black uppercase tracking-wider">
+                                                    {totals.discountPercent === 15 ? 'Welcome + Voucher' : (totals.discountPercent === 5 ? 'Welcome Discount' : 'Voucher Discount')} ({totals.discountPercent}%)
+                                                </span>
                                                 <span className="font-bold">-{formatCurrency(totals.discountAmount)}</span>
                                             </div>
                                         )}
@@ -540,7 +542,7 @@ export default function Create({ customers, services }) {
 
                                     <button 
                                         type="submit" 
-                                        disabled={processing || totals.total === 0 || (!data.id_customer && !isNewCustomer)}
+                                        disabled={processing || totals.total === 0 || (!data.id_customer && !isNewCustomer && !data.is_non_member)}
                                         className="group w-full bg-sky-600 hover:bg-sky-700 text-white py-5 rounded-2xl font-black text-sm shadow-lg shadow-sky-200 transition-all active:scale-[0.98] disabled:opacity-30 disabled:grayscale flex items-center justify-center gap-3 uppercase tracking-widest overflow-hidden relative"
                                     >
                                         {processing ? (

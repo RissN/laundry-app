@@ -102,7 +102,14 @@ export default function Index({ orders, totalRevenue, filters }) {
                                     </td>
                                     <td className="px-6 py-4 font-mono text-gray-500">{order.order_date}</td>
                                     <td className="px-6 py-4 font-mono text-gray-500">{order.order_end_date || '-'}</td>
-                                    <td className="px-6 py-4 font-medium text-gray-800">{order.customer?.customer_name}</td>
+                                    <td className="px-6 py-4 font-medium text-gray-800">
+                                        {order.customer ? order.customer.customer_name : (
+                                            <div className="flex flex-col">
+                                                <span>{order.non_member_name}</span>
+                                                <span className="text-[10px] text-amber-600 font-black uppercase tracking-widest leading-none">Non-Member</span>
+                                            </div>
+                                        )}
+                                    </td>
                                     <td className="px-6 py-4 text-right font-black text-rose-600">{formatCurrency(order.final_total ?? order.total)}</td>
                                 </tr>
                             ))}

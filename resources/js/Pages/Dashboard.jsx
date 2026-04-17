@@ -169,7 +169,10 @@ function OperatorView({ stats, extraData, formatCurrency }) {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <div className="font-bold text-slate-900 text-sm">{order.customer?.customer_name}</div>
+                                        <div className="font-bold text-slate-900 text-sm">
+                                            {order.customer ? order.customer.customer_name : order.non_member_name}
+                                        </div>
+                                        {!order.customer && <div className="text-[10px] text-amber-500 font-black uppercase tracking-wider">Non-Member</div>}
                                         <div className="text-[11px] text-slate-400 font-medium mt-0.5">{order.order_date}</div>
                                     </td>
                                     <td className="px-6 py-4">

@@ -6,24 +6,24 @@ class DiscountService
 {
     /**
      * Calculate discount based on business rules:
-     * - Registered customer automatically gets 5%.
-     * - Voucher code without registered customer (new customer) -> 10%
-     * - Registered customer + voucher code -> 15%
+     * - First Order (Welcome Discount) gets 5%.
+     * - Voucher code without Welcome Discount eligibility -> 10%
+     * - First Order + voucher code -> 15%
      *
-     * @param bool $isRegisteredCustomer
+     * @param bool $isWelcomeDiscountEligible
      * @param bool $hasVoucher
      * @param int $subtotal
      * @return array
      */
-    public function calculate(bool $isRegisteredCustomer, bool $hasVoucher, int $subtotal)
+    public function calculate(bool $isWelcomeDiscountEligible, bool $hasVoucher, int $subtotal)
     {
         $discountPercent = 0;
 
-        if ($isRegisteredCustomer && $hasVoucher) {
+        if ($isWelcomeDiscountEligible && $hasVoucher) {
             $discountPercent = 15;
         } elseif ($hasVoucher) {
             $discountPercent = 10;
-        } elseif ($isRegisteredCustomer) {
+        } elseif ($isWelcomeDiscountEligible) {
             $discountPercent = 5;
         }
 
