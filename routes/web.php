@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Operator\TransactionController;
 use App\Http\Controllers\Operator\PickupController;
+use App\Http\Controllers\Operator\VoucherController;
 use App\Http\Controllers\Pimpinan\ReportController;
 
 Route::get('/', function () {
@@ -38,6 +39,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         Route::get('pickup', [PickupController::class, 'index'])->name('pickup.index');
         Route::post('pickup/{order}', [PickupController::class, 'store'])->name('pickup.store');
+
+        Route::resource('voucher', VoucherController::class);
+        Route::post('voucher/validate', [VoucherController::class, 'validateCode'])->name('voucher.validate');
     });
 
     // Pimpinan Routes (id_level = 3)

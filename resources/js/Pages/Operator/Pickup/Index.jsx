@@ -51,7 +51,8 @@ export default function Index({ orders }) {
         });
     }
 
-    const change = (data.order_pay && !isNaN(data.order_pay)) ? Number(data.order_pay) - selectedOrder?.total : 0;
+    const payableAmount = selectedOrder?.final_total ?? selectedOrder?.total ?? 0;
+    const change = (data.order_pay && !isNaN(data.order_pay)) ? Number(data.order_pay) - payableAmount : 0;
 
     return (
         <AuthenticatedLayout header="Pengambilan & Pembayaran">
@@ -92,7 +93,11 @@ export default function Index({ orders }) {
                                             ))}
                                         </ul>
                                     </td>
-                                    <td className="px-6 py-4 text-right font-black text-rose-600 text-base">{formatCurrency(order.total)}</td>
+                                    <td className="px-6 py-4 text-right font-black">
+                                        <div className="flex flex-col items-end text-rose-600 text-base">
+                                            {formatCurrency(order.final_total ?? order.total)}
+                                        </div>
+                                    </td>
                                     <td className="px-6 py-4 text-center">
                                         <button 
                                             onClick={() => openModal(order)} 
@@ -136,16 +141,18 @@ export default function Index({ orders }) {
                         
                         <div className="bg-rose-50 rounded-xl p-5 mb-6 border border-rose-100 space-y-3">
                             <div className="flex justify-between items-center text-rose-800 text-xs font-bold uppercase tracking-wider">
-                                <span>Subtotal</span>
-                                <span>{formatCurrency(selectedOrder.total - selectedOrder.tax)}</span>
+                                <span>Subtotal & Pajak</span>
+                                <span>{formatCurrency(selectedOrder.total)}</span>
                             </div>
-                            <div className="flex justify-between items-center text-rose-800 text-xs font-bold uppercase tracking-wider">
-                                <span>Pajak (10%)</span>
-                                <span>{formatCurrency(selectedOrder.tax)}</span>
-                            </div>
+                            {selectedOrder.discount_amount > 0 && (
+                                <div className="flex justify-between items-center text-emerald-600 text-xs font-bold uppercase tracking-wider pb-2">
+                                    <span>Diskon ({selectedOrder.discount_percent}%)</span>
+                                    <span>-{formatCurrency(selectedOrder.discount_amount)}</span>
+                                </div>
+                            )}
                             <div className="pt-3 border-t border-rose-200 flex justify-between items-baseline">
                                 <span className="text-rose-900 text-sm font-black uppercase tracking-widest">Grand Total</span>
-                                <span className="text-4xl font-black text-rose-600 tracking-tight">{formatCurrency(selectedOrder.total)}</span>
+                                <span className="text-4xl font-black text-rose-600 tracking-tight">{formatCurrency(selectedOrder.final_total ?? selectedOrder.total)}</span>
                             </div>
                         </div>
 
@@ -158,7 +165,7 @@ export default function Index({ orders }) {
                                     </div>
                                     <input
                                         type="number"
-                                        min={selectedOrder.total}
+                                        min={payableAmount}
                                         value={data.order_pay}
                                         onChange={(e) => setData('order_pay', e.target.value)}
                                         className="block w-full pl-12 rounded-xl border-gray-200 shadow-sm focus:border-sky-500 focus:border-2 focus:ring-0 bg-gray-50 focus:bg-white text-gray-800 text-lg font-bold px-4 py-3"
@@ -190,7 +197,7 @@ export default function Index({ orders }) {
 
                             <button 
                                 type="submit" 
-                                disabled={processing || data.order_pay < selectedOrder.total} 
+                                disabled={processing || data.order_pay < payableAmount} 
                                 className="w-full py-4 mt-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-lg uppercase tracking-wider"
                             >
                                 Selesaikan Pesanan

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Head, Link, useForm, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import axios from 'axios';
 import { 
     PlusCircle, 
     X, 
@@ -15,7 +16,10 @@ import {
     Loader2,
     ShoppingCart,
     ChevronRight,
-    LucideReceipt
+    LucideReceipt,
+    Ticket,
+    XCircle,
+    Check
 } from 'lucide-react';
 
 export default function Create({ customers, services }) {
@@ -25,8 +29,13 @@ export default function Create({ customers, services }) {
         new_customer_name: '',
         new_customer_phone: '',
         new_customer_address: '',
-        items: [{ id_service: '', qty: 1, notes: '' }]
+        items: [{ id_service: '', qty: 1, notes: '' }],
+        voucher_code: ''
     });
+
+    const [voucherData, setVoucherData] = useState(null);
+    const [isValidatingVoucher, setIsValidatingVoucher] = useState(false);
+    const [voucherError, setVoucherError] = useState('');
 
     const handleAddItem = () => {
         setData('items', [...data.items, { id_service: '', qty: 1, notes: '' }]);
@@ -44,19 +53,70 @@ export default function Create({ customers, services }) {
         setData('items', newItems);
     };
 
+    const handleValidateVoucher = async () => {
+        if (!data.voucher_code) return;
+        
+        setIsValidatingVoucher(true);
+        setVoucherError('');
+        try {
+            const response = await axios.post(route('operator.voucher.validate'), { 
+                code: data.voucher_code 
+            });
+            if (response.data.success) {
+                setVoucherData(response.data.voucher);
+            }
+        } catch (error) {
+            setVoucherError(error.response?.data?.message || 'Voucher tidak valid');
+            setVoucherData(null);
+        } finally {
+            setIsValidatingVoucher(false);
+        }
+    };
+
+    const handleRemoveVoucher = () => {
+        setData('voucher_code', '');
+        setVoucherData(null);
+        setVoucherError('');
+    };
+
     const TAX_RATE = 0.10;
 
     const calculateTotals = () => {
-        let subtotal = 0;
+        let subtotalItems = 0;
         data.items.forEach(item => {
             const service = services.find(s => s.id == item.id_service);
             if(service && item.qty) {
-                subtotal += service.price * Number(item.qty);
+                subtotalItems += service.price * Number(item.qty);
             }
         });
-        const tax = Math.round(subtotal * TAX_RATE);
-        const total = subtotal + tax;
-        return { subtotal, tax, total };
+        const tax = Math.round(subtotalItems * TAX_RATE);
+        const subtotalWithTax = subtotalItems + tax;
+
+        // Discount Logic
+        // Registered if id_customer is selected (not new customer)
+        const isRegistered = data.id_customer !== '' && !isNewCustomer;
+        const hasVoucher = voucherData !== null;
+        
+        let discountPercent = 0;
+        if (isRegistered && hasVoucher) {
+            discountPercent = 15;
+        } else if (hasVoucher) {
+            discountPercent = 10;
+        } else if (isRegistered) {
+            discountPercent = 5;
+        }
+
+        const discountAmount = Math.round(subtotalWithTax * (discountPercent / 100));
+        const total = subtotalWithTax - discountAmount;
+
+        return { 
+            subtotal: subtotalItems, 
+            tax, 
+            subtotalWithTax,
+            discountPercent, 
+            discountAmount, 
+            total 
+        };
     };
 
     const totals = calculateTotals();
@@ -296,6 +356,61 @@ export default function Create({ customers, services }) {
                             </button>
                         </div>
                     </div>
+
+                    {/* Voucher Section */}
+                    <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden mt-8">
+                        <div className="px-8 py-5 border-b border-gray-50 bg-gray-50/20 flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center shadow-sm">
+                                <Ticket size={20} />
+                            </div>
+                            <h3 className="text-lg font-black text-slate-800 tracking-tight">3. Voucher & Promosi</h3>
+                        </div>
+                        <div className="px-8 py-8">
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <div className="flex-1 relative group">
+                                    <input
+                                        type="text"
+                                        value={data.voucher_code}
+                                        onChange={(e) => setData('voucher_code', e.target.value.toUpperCase())}
+                                        placeholder="Ketik kode voucher..."
+                                        disabled={!!voucherData}
+                                        className={`block w-full rounded-2xl border-gray-100 py-3.5 px-6 pr-12 text-gray-800 focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all font-bold shadow-sm ${!!voucherData ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-white'}`}
+                                    />
+                                    {voucherData && (
+                                        <div className="absolute right-6 top-1/2 -translate-y-1/2 text-emerald-500">
+                                            <CheckCircle size={18} />
+                                        </div>
+                                    )}
+                                </div>
+                                {!voucherData ? (
+                                    <button
+                                        type="button"
+                                        onClick={handleValidateVoucher}
+                                        disabled={isValidatingVoucher || !data.voucher_code}
+                                        className="bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-sky-100 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+                                    >
+                                        {isValidatingVoucher ? (
+                                            <Loader2 size={16} className="animate-spin" />
+                                        ) : (
+                                            <Ticket size={16} />
+                                        )}
+                                        {isValidatingVoucher ? 'Memvalidasi...' : 'Terapkan Voucher'}
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={handleRemoveVoucher}
+                                        className="bg-rose-50 hover:bg-rose-100 text-rose-500 px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest border border-rose-100 transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <X size={16} />
+                                        Hapus
+                                    </button>
+                                )}
+                            </div>
+                            {voucherError && <p className="mt-4 text-xs text-rose-500 font-bold ml-1 flex items-center gap-1"><Info size={12} /> {voucherError}</p>}
+                            {voucherData && <p className="mt-4 text-xs text-emerald-600 font-black ml-1 flex items-center gap-1 uppercase tracking-widest"><Check size={14} /> Voucher '{voucherData.code}' berhasil diterapkan!</p>}
+                        </div>
+                    </div>
                 </div>
 
                 {/* Receipt Sidebar - Clean Sky Theme */}
@@ -349,6 +464,16 @@ export default function Create({ customers, services }) {
                                             <span className="text-[10px] font-black uppercase tracking-wider">Pajak ({TAX_RATE * 100}%)</span>
                                             <span className="font-bold">{formatCurrency(totals.tax)}</span>
                                         </div>
+                                        
+                                        {totals.discountPercent > 0 && (
+                                            <div className="flex justify-between items-center p-3 bg-white/60 rounded-xl border border-white shadow-sm animate-in zoom-in-95 duration-300">
+                                                <div className="flex flex-col">
+                                                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600">Diskon Member/Voucher</span>
+                                                    <span className="text-[8px] font-bold text-emerald-400">Penerapan Diskon {totals.discountPercent}%</span>
+                                                </div>
+                                                <span className="font-black text-emerald-600">-{formatCurrency(totals.discountAmount)}</span>
+                                            </div>
+                                        )}
                                         
                                         <div className="flex justify-between items-center mt-4 mb-2">
                                             <span className="text-slate-400 text-[9px] font-black uppercase tracking-[0.2em]">Total Bill Amount</span>

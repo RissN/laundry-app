@@ -7,6 +7,9 @@ use App\Models\Customer;
 use App\Models\TypeOfService;
 use App\Models\TransOrder;
 use App\Models\TransOrderDetail;
+use App\Models\Voucher;
+use App\Models\TransVoucherUsage;
+use App\Services\DiscountService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +17,12 @@ use Illuminate\Support\Facades\DB;
 class TransactionController extends Controller
 {
     const TAX_RATE = 0.10;
+    protected $discountService;
+
+    public function __construct(DiscountService $discountService)
+    {
+        $this->discountService = $discountService;
+    }
 
     public function create()
     {
@@ -32,6 +41,7 @@ class TransactionController extends Controller
             'items' => 'required|array|min:1',
             'items.*.id_service' => 'required|exists:type_of_services,id',
             'items.*.qty' => 'required|numeric|min:1',
+            'voucher_code' => 'nullable|string|exists:vouchers,code',
         ]);
 
         DB::beginTransaction();
@@ -70,17 +80,47 @@ class TransactionController extends Controller
 
             $taxRate = self::TAX_RATE;
             $taxAmount = round($subtotalAll * $taxRate);
-            $grandTotal = $subtotalAll + $taxAmount;
+            $totalBeforeDiscount = $subtotalAll + $taxAmount;
+
+            // Handle Discount Logic
+            $isRegisteredCustomer = $request->has('id_customer') && $request->id_customer !== null;
+            $voucher = null;
+            if ($request->voucher_code) {
+                $voucher = Voucher::where('code', strtoupper($request->voucher_code))
+                    ->where('is_active', true)
+                    ->first();
+            }
+
+            $discountData = $this->discountService->calculate(
+                $isRegisteredCustomer,
+                $voucher !== null,
+                $totalBeforeDiscount
+            );
 
             // Create Order
             $order = TransOrder::create([
                 'id_customer' => $customerId,
+                'id_voucher' => $voucher ? $voucher->id : null,
                 'order_code' => $orderCode,
                 'order_date' => date('Y-m-d'),
                 'order_status' => 0,
                 'tax' => $taxAmount,
-                'total' => $grandTotal,
+                'total' => $totalBeforeDiscount,
+                'discount_percent' => $discountData['discount_percent'],
+                'discount_amount' => $discountData['discount_amount'],
+                'final_total' => $discountData['final_total'],
             ]);
+
+            // Record Voucher Usage
+            if ($voucher) {
+                TransVoucherUsage::create([
+                    'id_voucher' => $voucher->id,
+                    'id_order' => $order->id,
+                ]);
+
+                // "Voucher sekali pakai, langsung hangus"
+                $voucher->update(['is_active' => false]);
+            }
 
             // Create Details
             foreach ($detailsData as $detail) {

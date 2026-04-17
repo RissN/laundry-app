@@ -27,13 +27,15 @@ class PickupController extends Controller
             return back()->with('error', 'Order has already been picked up.');
         }
 
+        $payableAmount = $order->final_total ?? $order->total;
+
         $request->validate([
-            'order_pay' => 'required|numeric|min:' . $order->total,
+            'order_pay' => 'required|numeric|min:' . $payableAmount,
             'notes' => 'nullable|string'
         ]);
 
         $order_pay = $request->order_pay;
-        $order_change = $order_pay - $order->total;
+        $order_change = $order_pay - $payableAmount;
 
         DB::beginTransaction();
         try {
