@@ -42,19 +42,31 @@ class TransactionController extends Controller
             'items.*.id_service' => 'required|exists:type_of_services,id',
             'items.*.qty' => 'required|numeric|min:1',
             'voucher_code' => 'nullable|string|exists:vouchers,code',
+            'is_non_member' => 'nullable|boolean',
+            'non_member_name' => 'required_if:is_non_member,true|string|nullable|max:255',
+            'non_member_phone' => 'required_if:is_non_member,true|string|nullable|max:20',
         ]);
 
         DB::beginTransaction();
         try {
-            // Check if new customer inline creation
-            $customerId = $request->id_customer;
-            if (!$customerId) {
-                $newCustomer = Customer::create([
-                    'customer_name' => $request->new_customer_name,
-                    'phone' => $request->new_customer_phone,
-                    'address' => $request->new_customer_address,
-                ]);
-                $customerId = $newCustomer->id;
+            // Check if non-member or member
+            $customerId = null;
+            $nonMemberName = null;
+            $nonMemberPhone = null;
+
+            if ($request->is_non_member) {
+                $nonMemberName = $request->non_member_name;
+                $nonMemberPhone = $request->non_member_phone;
+            } else {
+                $customerId = $request->id_customer;
+                if (!$customerId) {
+                    $newCustomer = Customer::create([
+                        'customer_name' => $request->new_customer_name,
+                        'phone' => $request->new_customer_phone,
+                        'address' => $request->new_customer_address,
+                    ]);
+                    $customerId = $newCustomer->id;
+                }
             }
 
             // Generate Order Code (e.g. ORD-YYYYMMDD-001)
@@ -83,7 +95,8 @@ class TransactionController extends Controller
             $totalBeforeDiscount = $subtotalAll + $taxAmount;
 
             // Handle Discount Logic
-            $isRegisteredCustomer = $request->has('id_customer') && $request->id_customer !== null;
+            // If it's not a non-member, it's either an existing member or a new member being registered.
+            $isRegisteredCustomer = !$request->is_non_member;
             $voucher = null;
             if ($request->voucher_code) {
                 $voucher = Voucher::where('code', strtoupper($request->voucher_code))
@@ -100,6 +113,8 @@ class TransactionController extends Controller
             // Create Order
             $order = TransOrder::create([
                 'id_customer' => $customerId,
+                'non_member_name' => $nonMemberName,
+                'non_member_phone' => $nonMemberPhone,
                 'id_voucher' => $voucher ? $voucher->id : null,
                 'order_code' => $orderCode,
                 'order_date' => date('Y-m-d'),

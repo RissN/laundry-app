@@ -84,7 +84,14 @@ export default function Index({ orders }) {
                                             {order.order_code}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 font-semibold text-gray-800">{order.customer?.customer_name}</td>
+                                    <td className="px-6 py-4 font-semibold text-gray-800">
+                                        {order.customer ? order.customer.customer_name : (
+                                            <div className="flex flex-col">
+                                                <span>{order.non_member_name}</span>
+                                                <span className="text-[10px] text-amber-600 font-black uppercase tracking-widest leading-none">Non-Member</span>
+                                            </div>
+                                        )}
+                                    </td>
                                     <td className="px-6 py-4 text-gray-600">{order.order_date}</td>
                                     <td className="px-6 py-4 text-gray-500 text-xs">
                                         <ul className="list-disc list-inside">

@@ -30,7 +30,10 @@ export default function Create({ customers, services }) {
         new_customer_phone: '',
         new_customer_address: '',
         items: [{ id_service: '', qty: 1, notes: '' }],
-        voucher_code: ''
+        voucher_code: '',
+        is_non_member: false,
+        non_member_name: '',
+        non_member_phone: ''
     });
 
     const [voucherData, setVoucherData] = useState(null);
@@ -42,7 +45,7 @@ export default function Create({ customers, services }) {
         if (voucherData) {
             handleRemoveVoucher();
         }
-    }, [data.id_customer]);
+    }, [data.id_customer, data.is_non_member]);
 
     const handleAddItem = () => {
         setData('items', [...data.items, { id_service: '', qty: 1, notes: '' }]);
@@ -101,8 +104,8 @@ export default function Create({ customers, services }) {
         const subtotalWithTax = subtotalItems + tax;
 
         // Discount Logic
-        // Registered if id_customer is selected (not new customer)
-        const isRegistered = data.id_customer !== '' && !isNewCustomer;
+        // Registered if id_customer is selected or new customer registration
+        const isRegistered = (data.id_customer !== '' || isNewCustomer) && !data.is_non_member;
         const hasVoucher = voucherData !== null;
         
         let discountPercent = 0;
@@ -179,83 +182,140 @@ export default function Create({ customers, services }) {
                                     </div>
                                     <h3 className="text-lg font-black text-slate-800 tracking-tight">1. Informasi Pelanggan</h3>
                                 </div>
-                                <div className="inline-flex p-1 bg-sky-50 rounded-2xl border border-sky-100/50">
-                                    <button 
-                                        type="button" 
-                                        onClick={() => setIsNewCustomer(false)}
-                                        className={`px-5 py-2 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${!isNewCustomer ? 'bg-white text-sky-600 shadow-md ring-1 ring-sky-100' : 'text-gray-400 hover:text-sky-600'}`}
-                                    >
-                                        Database Staf
-                                    </button>
-                                    <button 
-                                        type="button" 
-                                        onClick={() => setIsNewCustomer(true)}
-                                        className={`px-5 py-2 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${isNewCustomer ? 'bg-white text-sky-600 shadow-md ring-1 ring-sky-100' : 'text-gray-400 hover:text-sky-600'}`}
-                                    >
-                                        Pendaftaran Baru
-                                    </button>
-                                </div>
                             </div>
                         </div>
                         
                         <div className="px-8 py-6">
-                            {!isNewCustomer ? (
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Pencarian Nama / No HP</label>
-                                    <div className="relative group">
-                                        <select
-                                            value={data.id_customer}
-                                            onChange={(e) => setData('id_customer', e.target.value)}
-                                            className="block w-full rounded-2xl border-gray-200 bg-white py-3.5 px-6 pr-12 text-gray-800 focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all font-bold shadow-sm appearance-none cursor-pointer"
-                                        >
-                                            <option value="">-- Cari Pelanggan Laundry --</option>
-                                            {customers.map(c => (
-                                                <option key={c.id} value={c.id}>{c.customer_name} • {c.phone}</option>
-                                            ))}
-                                        </select>
-                                        <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-sky-500 group-hover:scale-110 transition-transform">
-                                            <Search size={18} />
+                            <div className="grid grid-cols-1 gap-6">
+                                {/* Toggle Mode Pelanggan */}
+                                <div className="flex flex-wrap gap-2 pb-4">
+                                    <button 
+                                        type="button" 
+                                        onClick={() => {
+                                            setIsNewCustomer(false);
+                                            setData('is_non_member', false);
+                                        }}
+                                        className={`px-6 py-2.5 text-xs font-black uppercase tracking-wider rounded-2xl transition-all flex items-center gap-2 ${!isNewCustomer && !data.is_non_member ? 'bg-sky-600 text-white shadow-lg shadow-sky-100' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'}`}
+                                    >
+                                        <Search size={14} /> Member Terdaftar
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        onClick={() => {
+                                            setIsNewCustomer(true);
+                                            setData('is_non_member', false);
+                                        }}
+                                        className={`px-6 py-2.5 text-xs font-black uppercase tracking-wider rounded-2xl transition-all flex items-center gap-2 ${isNewCustomer && !data.is_non_member ? 'bg-sky-600 text-white shadow-lg shadow-sky-100' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'}`}
+                                    >
+                                        <UserPlus size={14} /> Daftar Member Baru
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        onClick={() => {
+                                            setIsNewCustomer(false);
+                                            setData('is_non_member', true);
+                                            setData('id_customer', '');
+                                        }}
+                                        className={`px-6 py-2.5 text-xs font-black uppercase tracking-wider rounded-2xl transition-all flex items-center gap-2 ${data.is_non_member ? 'bg-amber-500 text-white shadow-lg shadow-amber-100' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'}`}
+                                    >
+                                        <XCircle size={14} /> Tanpa Daftar (Bukan Member)
+                                    </button>
+                                </div>
+
+                                {!data.is_non_member ? (
+                                    !isNewCustomer ? (
+                                        <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
+                                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Pencarian Nama / No HP</label>
+                                            <div className="relative group">
+                                                <select
+                                                    value={data.id_customer}
+                                                    onChange={(e) => setData('id_customer', e.target.value)}
+                                                    className="block w-full rounded-2xl border-gray-200 bg-white py-3.5 px-6 pr-12 text-gray-800 focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all font-bold shadow-sm appearance-none cursor-pointer"
+                                                >
+                                                    <option value="">-- Cari Pelanggan Laundry --</option>
+                                                    {customers.map(c => (
+                                                        <option key={c.id} value={c.id}>{c.customer_name} • {c.phone}</option>
+                                                    ))}
+                                                </select>
+                                                <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-sky-500 group-hover:scale-110 transition-transform">
+                                                    <Search size={18} />
+                                                </div>
+                                            </div>
+                                            {errors.id_customer && <p className="mt-2 text-xs text-rose-500 font-bold ml-1 flex items-center gap-1"><Info size={12} /> {errors.id_customer}</p>}
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-sky-50/50 rounded-[2rem] border border-sky-100 animate-in zoom-in-95 duration-300">
+                                            <div className="md:col-span-1 space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-sky-600 ml-1">Nama Pelanggan</label>
+                                                <input
+                                                    type="text"
+                                                    value={data.new_customer_name}
+                                                    onChange={(e) => setData('new_customer_name', e.target.value)}
+                                                    placeholder="Nama lengkap..."
+                                                    className="block w-full rounded-2xl border-transparent bg-white py-3 px-5 text-gray-800 focus:ring-4 focus:ring-sky-200/50 focus:border-sky-400 transition-all font-bold shadow-sm"
+                                                />
+                                                {errors.new_customer_name && <p className="text-xs text-rose-500 font-bold ml-1">{errors.new_customer_name}</p>}
+                                            </div>
+                                            <div className="md:col-span-1 space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-sky-600 ml-1">Nomor WhatsApp</label>
+                                                <input
+                                                    type="text"
+                                                    value={data.new_customer_phone}
+                                                    onChange={(e) => setData('new_customer_phone', e.target.value)}
+                                                    placeholder="08..."
+                                                    className="block w-full rounded-2xl border-transparent bg-white py-3 px-5 text-gray-800 focus:ring-4 focus:ring-sky-200/50 focus:border-sky-400 transition-all font-bold shadow-sm"
+                                                />
+                                                {errors.new_customer_phone && <p className="text-xs text-rose-500 font-bold ml-1">{errors.new_customer_phone}</p>}
+                                            </div>
+                                            <div className="md:col-span-2 space-y-2">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-sky-600 ml-1">Alamat Lengkap</label>
+                                                <textarea
+                                                    rows="2"
+                                                    value={data.new_customer_address}
+                                                    onChange={(e) => setData('new_customer_address', e.target.value)}
+                                                    placeholder="Detail alamat domisili..."
+                                                    className="block w-full rounded-2xl border-transparent bg-white py-3 px-5 text-gray-800 focus:ring-4 focus:ring-sky-200/50 focus:border-sky-400 transition-all font-bold shadow-sm"
+                                                />
+                                                {errors.new_customer_address && <p className="text-xs text-rose-500 font-bold ml-1">{errors.new_customer_address}</p>}
+                                            </div>
+                                        </div>
+                                    )
+                                ) : (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-amber-50/50 rounded-[2rem] border border-amber-100 animate-in zoom-in-95 duration-300">
+                                        <div className="md:col-span-2 flex items-center gap-3 mb-2">
+                                            <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+                                                <Info size={16} />
+                                            </div>
+                                            <div>
+                                                <h4 className="text-xs font-black text-amber-800 uppercase tracking-widest">Sekali Pakai (Tanpa Member)</h4>
+                                                <p className="text-[10px] text-amber-600 font-bold italic">Data ini hanya akan disimpan di nota transaksi ini saja.</p>
+                                            </div>
+                                        </div>
+                                        <div className="md:col-span-1 space-y-2">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-amber-700 ml-1">Nama Lengkap</label>
+                                            <input
+                                                type="text"
+                                                value={data.non_member_name}
+                                                onChange={(e) => setData('non_member_name', e.target.value)}
+                                                placeholder="Nama pelanggan..."
+                                                className="block w-full rounded-2xl border-transparent bg-white py-3 px-5 text-gray-800 focus:ring-4 focus:ring-amber-200/50 focus:border-amber-400 transition-all font-bold shadow-sm"
+                                            />
+                                            {errors.non_member_name && <p className="text-xs text-rose-500 font-bold ml-1">{errors.non_member_name}</p>}
+                                        </div>
+                                        <div className="md:col-span-1 space-y-2">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-amber-700 ml-1">Nomor HP</label>
+                                            <input
+                                                type="text"
+                                                value={data.non_member_phone}
+                                                onChange={(e) => setData('non_member_phone', e.target.value)}
+                                                placeholder="Nomor kontak..."
+                                                className="block w-full rounded-2xl border-transparent bg-white py-3 px-5 text-gray-800 focus:ring-4 focus:ring-amber-200/50 focus:border-amber-400 transition-all font-bold shadow-sm"
+                                            />
+                                            {errors.non_member_phone && <p className="text-xs text-rose-500 font-bold ml-1">{errors.non_member_phone}</p>}
                                         </div>
                                     </div>
-                                    {errors.id_customer && <p className="mt-2 text-xs text-rose-500 font-bold ml-1 flex items-center gap-1"><Info size={12} /> {errors.id_customer}</p>}
-                                </div>
-                            ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-sky-50/50 rounded-[2rem] border border-sky-100">
-                                    <div className="md:col-span-1 space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-sky-600 ml-1">Nama Pelanggan</label>
-                                        <input
-                                            type="text"
-                                            value={data.new_customer_name}
-                                            onChange={(e) => setData('new_customer_name', e.target.value)}
-                                            placeholder="Nama lengkap..."
-                                            className="block w-full rounded-2xl border-transparent bg-white py-3 px-5 text-gray-800 focus:ring-4 focus:ring-sky-200/50 focus:border-sky-400 transition-all font-bold shadow-sm"
-                                        />
-                                        {errors.new_customer_name && <p className="text-xs text-rose-500 font-bold ml-1">{errors.new_customer_name}</p>}
-                                    </div>
-                                    <div className="md:col-span-1 space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-sky-600 ml-1">Nomor WhatsApp</label>
-                                        <input
-                                            type="text"
-                                            value={data.new_customer_phone}
-                                            onChange={(e) => setData('new_customer_phone', e.target.value)}
-                                            placeholder="08..."
-                                            className="block w-full rounded-2xl border-transparent bg-white py-3 px-5 text-gray-800 focus:ring-4 focus:ring-sky-200/50 focus:border-sky-400 transition-all font-bold shadow-sm"
-                                        />
-                                        {errors.new_customer_phone && <p className="text-xs text-rose-500 font-bold ml-1">{errors.new_customer_phone}</p>}
-                                    </div>
-                                    <div className="md:col-span-2 space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-sky-600 ml-1">Alamat Lengkap</label>
-                                        <textarea
-                                            rows="2"
-                                            value={data.new_customer_address}
-                                            onChange={(e) => setData('new_customer_address', e.target.value)}
-                                            placeholder="Detail alamat domisili..."
-                                            className="block w-full rounded-2xl border-transparent bg-white py-3 px-5 text-gray-800 focus:ring-4 focus:ring-sky-200/50 focus:border-sky-400 transition-all font-bold shadow-sm"
-                                        />
-                                        {errors.new_customer_address && <p className="text-xs text-rose-500 font-bold ml-1">{errors.new_customer_address}</p>}
-                                    </div>
-                                </div>
-                            )}
+                                )}
+                            </div>
                         </div>
                     </div>
 
