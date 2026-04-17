@@ -180,7 +180,7 @@ export default function Create({ customers, services }) {
                                     <div className="w-10 h-10 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center shadow-sm">
                                         <Search size={20} />
                                     </div>
-                                    <h3 className="text-lg font-black text-slate-800 tracking-tight">1. Informasi Pelanggan</h3>
+                                    <h3 className="text-lg font-black text-slate-800 tracking-tight">Informasi Pelanggan</h3>
                                 </div>
                             </div>
                         </div>
@@ -326,7 +326,7 @@ export default function Create({ customers, services }) {
                                 <div className="w-10 h-10 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center shadow-sm">
                                     <Scale size={20} />
                                 </div>
-                                <h3 className="text-lg font-black text-slate-800 tracking-tight">2. Detail Layanan Laundry</h3>
+                                <h3 className="text-lg font-black text-slate-800 tracking-tight">Layanan Laundry</h3>
                             </div>
                             <div className="flex items-center gap-2 px-4 py-1.5 bg-sky-100 text-sky-700 rounded-2xl border border-sky-200">
                                 <ShoppingCart size={14} />
