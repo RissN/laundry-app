@@ -117,9 +117,6 @@ class TransactionController extends Controller
                     'id_voucher' => $voucher->id,
                     'id_order' => $order->id,
                 ]);
-
-                // "Voucher sekali pakai, langsung hangus"
-                $voucher->update(['is_active' => false]);
             }
 
             // Create Details

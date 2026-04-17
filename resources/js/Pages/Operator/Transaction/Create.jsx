@@ -37,6 +37,13 @@ export default function Create({ customers, services }) {
     const [isValidatingVoucher, setIsValidatingVoucher] = useState(false);
     const [voucherError, setVoucherError] = useState('');
 
+    // Reset voucher when customer changes to force re-validation
+    React.useEffect(() => {
+        if (voucherData) {
+            handleRemoveVoucher();
+        }
+    }, [data.id_customer]);
+
     const handleAddItem = () => {
         setData('items', [...data.items, { id_service: '', qty: 1, notes: '' }]);
     };
@@ -60,7 +67,8 @@ export default function Create({ customers, services }) {
         setVoucherError('');
         try {
             const response = await axios.post(route('operator.voucher.validate'), { 
-                code: data.voucher_code 
+                code: data.voucher_code,
+                id_customer: data.id_customer
             });
             if (response.data.success) {
                 setVoucherData(response.data.voucher);
@@ -466,12 +474,9 @@ export default function Create({ customers, services }) {
                                         </div>
                                         
                                         {totals.discountPercent > 0 && (
-                                            <div className="flex justify-between items-center p-3 bg-white/60 rounded-xl border border-white shadow-sm animate-in zoom-in-95 duration-300">
-                                                <div className="flex flex-col">
-                                                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600">Diskon Member/Voucher</span>
-                                                    <span className="text-[8px] font-bold text-emerald-400">Penerapan Diskon {totals.discountPercent}%</span>
-                                                </div>
-                                                <span className="font-black text-emerald-600">-{formatCurrency(totals.discountAmount)}</span>
+                                            <div className="flex justify-between items-center text-emerald-600">
+                                                <span className="text-[10px] font-black uppercase tracking-wider">Diskon Member/Voucher ({totals.discountPercent}%)</span>
+                                                <span className="font-bold">-{formatCurrency(totals.discountAmount)}</span>
                                             </div>
                                         )}
                                         

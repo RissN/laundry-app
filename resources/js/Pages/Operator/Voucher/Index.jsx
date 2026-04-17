@@ -18,7 +18,9 @@ export default function Index({ vouchers }) {
     const { delete: destroy, post, patch } = useForm();
     const [isCreating, setIsCreating] = useState(false);
     const { data, setData, post: postVoucher, processing, reset, errors } = useForm({
-        code: ''
+        code: '',
+        expires_at: '',
+        duration: ''
     });
 
     const generateRandomCode = () => {
@@ -128,6 +130,37 @@ export default function Index({ vouchers }) {
                                     {errors.code && <p className="text-[10px] text-rose-500 font-bold ml-1">{errors.code}</p>}
                                 </div>
 
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Masa Berlaku</label>
+                                    <select
+                                        value={data.duration || ''}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            let expiry = '';
+                                            if (val === 'week') {
+                                                const d = new Date();
+                                                d.setDate(d.getDate() + 7);
+                                                expiry = d.toISOString().split('T')[0];
+                                            } else if (val === 'month') {
+                                                const d = new Date();
+                                                d.setMonth(d.getMonth() + 1);
+                                                expiry = d.toISOString().split('T')[0];
+                                            }
+                                            setData((prev) => ({
+                                                ...prev,
+                                                duration: val,
+                                                expires_at: expiry
+                                            }));
+                                        }}
+                                        className="block w-full rounded-2xl border-gray-100 bg-white py-3.5 px-6 text-gray-800 focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all font-bold shadow-sm"
+                                    >
+                                        <option value="">Selamanya</option>
+                                        <option value="week">1 Minggu (7 Hari)</option>
+                                        <option value="month">1 Bulan (30 Hari)</option>
+                                    </select>
+                                    {errors.expires_at && <p className="text-[10px] text-rose-500 font-bold ml-1">{errors.expires_at}</p>}
+                                </div>
+
                                 <div className="p-6 bg-amber-50 rounded-3xl border border-amber-100 space-y-3">
                                     <div className="flex items-center gap-2 text-amber-700">
                                         <Calendar size={14} />
@@ -173,6 +206,7 @@ export default function Index({ vouchers }) {
                                 <thead className="bg-gray-50/50 border-b border-gray-100">
                                     <tr>
                                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Kode</th>
+                                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Berlaku Sampai</th>
                                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Status</th>
                                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Pemakaian</th>
                                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Aksi</th>
@@ -194,13 +228,23 @@ export default function Index({ vouchers }) {
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
+                                                <div className="flex flex-col">
+                                                    <span className="text-xs font-bold text-slate-600">
+                                                        {voucher.expires_at ? new Date(voucher.expires_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Selamanya'}
+                                                    </span>
+                                                    {voucher.expires_at && new Date(voucher.expires_at) < new Date().setHours(0,0,0,0) && (
+                                                        <span className="text-[8px] font-black text-rose-500 uppercase tracking-tighter">Sudah Kadaluarsa</span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6">
                                                 {voucher.is_active ? (
                                                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-widest">
                                                         <CheckCircle2 size={10} /> Aktif
                                                     </span>
                                                 ) : (
                                                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-[10px] font-black uppercase tracking-widest">
-                                                        <XCircle size={10} /> Hangus
+                                                        <XCircle size={10} /> Nonaktif
                                                     </span>
                                                 )}
                                             </td>

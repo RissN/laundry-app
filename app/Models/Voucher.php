@@ -13,6 +13,12 @@ class Voucher extends Model
     protected $fillable = [
         'code',
         'is_active',
+        'expires_at',
+    ];
+
+    protected $casts = [
+        'expires_at' => 'date',
+        'is_active' => 'boolean',
     ];
 
     public function usages()
