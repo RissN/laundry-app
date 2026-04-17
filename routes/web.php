@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\VoucherController as AdminVoucherController;
 use App\Http\Controllers\Operator\TransactionController;
 use App\Http\Controllers\Operator\PickupController;
 use App\Http\Controllers\Operator\VoucherController;
@@ -30,6 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('customers', CustomerController::class);
         Route::resource('users', UserController::class);
         Route::resource('services', ServiceController::class);
+        Route::resource('voucher', AdminVoucherController::class);
     });
 
     // Operator Routes (id_level = 2 or 1)
@@ -40,7 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('pickup', [PickupController::class, 'index'])->name('pickup.index');
         Route::post('pickup/{order}', [PickupController::class, 'store'])->name('pickup.store');
 
-        Route::resource('voucher', VoucherController::class);
+        // Changed from resource to just validation for non-admins
         Route::post('voucher/validate', [VoucherController::class, 'validateCode'])->name('voucher.validate');
     });
 

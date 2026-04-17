@@ -425,60 +425,6 @@ export default function Create({ customers, services }) {
                         </div>
                     </div>
 
-                    {/* Voucher Section */}
-                    <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden mt-8">
-                        <div className="px-8 py-5 border-b border-gray-50 bg-gray-50/20 flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center shadow-sm">
-                                <Ticket size={20} />
-                            </div>
-                            <h3 className="text-lg font-black text-slate-800 tracking-tight">3. Voucher & Promosi</h3>
-                        </div>
-                        <div className="px-8 py-8">
-                            <div className="flex flex-col md:flex-row gap-4">
-                                <div className="flex-1 relative group">
-                                    <input
-                                        type="text"
-                                        value={data.voucher_code}
-                                        onChange={(e) => setData('voucher_code', e.target.value.toUpperCase())}
-                                        placeholder="Ketik kode voucher..."
-                                        disabled={!!voucherData}
-                                        className={`block w-full rounded-2xl border-gray-100 py-3.5 px-6 pr-12 text-gray-800 focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all font-bold shadow-sm ${!!voucherData ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-white'}`}
-                                    />
-                                    {voucherData && (
-                                        <div className="absolute right-6 top-1/2 -translate-y-1/2 text-emerald-500">
-                                            <CheckCircle size={18} />
-                                        </div>
-                                    )}
-                                </div>
-                                {!voucherData ? (
-                                    <button
-                                        type="button"
-                                        onClick={handleValidateVoucher}
-                                        disabled={isValidatingVoucher || !data.voucher_code}
-                                        className="bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-sky-100 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
-                                    >
-                                        {isValidatingVoucher ? (
-                                            <Loader2 size={16} className="animate-spin" />
-                                        ) : (
-                                            <Ticket size={16} />
-                                        )}
-                                        {isValidatingVoucher ? 'Memvalidasi...' : 'Terapkan Voucher'}
-                                    </button>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        onClick={handleRemoveVoucher}
-                                        className="bg-rose-50 hover:bg-rose-100 text-rose-500 px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest border border-rose-100 transition-all flex items-center justify-center gap-2"
-                                    >
-                                        <X size={16} />
-                                        Hapus
-                                    </button>
-                                )}
-                            </div>
-                            {voucherError && <p className="mt-4 text-xs text-rose-500 font-bold ml-1 flex items-center gap-1"><Info size={12} /> {voucherError}</p>}
-                            {voucherData && <p className="mt-4 text-xs text-emerald-600 font-black ml-1 flex items-center gap-1 uppercase tracking-widest"><Check size={14} /> Voucher '{voucherData.code}' berhasil diterapkan!</p>}
-                        </div>
-                    </div>
                 </div>
 
                 {/* Receipt Sidebar - Clean Sky Theme */}
@@ -521,7 +467,49 @@ export default function Create({ customers, services }) {
                             </div>
                             
                             {/* Calculation Details */}
-                            <div className="space-y-4 mb-10 pt-8 border-t border-dashed border-sky-200">
+                            <div className="space-y-4 pt-4 border-t border-dashed border-sky-200">
+                                {/* Compact Voucher Input */}
+                                <div className="space-y-2 mb-6">
+                                    <p className="text-[10px] font-black uppercase text-sky-400 tracking-[0.2em] ml-1">Kupon / Voucher Promo</p>
+                                    <div className="flex gap-2">
+                                        <div className="relative flex-1 group">
+                                            <input
+                                                type="text"
+                                                value={data.voucher_code}
+                                                onChange={(e) => setData('voucher_code', e.target.value.toUpperCase())}
+                                                placeholder="KODE..."
+                                                disabled={!!voucherData}
+                                                className={`block w-full rounded-xl border-white py-2 px-4 text-xs font-bold transition-all shadow-sm ${!!voucherData ? 'bg-emerald-50 text-emerald-700' : 'bg-white focus:ring-4 focus:ring-sky-100 focus:border-sky-400'}`}
+                                            />
+                                            <Ticket className={`absolute right-3 top-1/2 -translate-y-1/2 ${voucherData ? 'text-emerald-500' : 'text-sky-200'}`} size={14} />
+                                        </div>
+                                        {!voucherData ? (
+                                            <button
+                                                type="button"
+                                                onClick={handleValidateVoucher}
+                                                disabled={isValidatingVoucher || !data.voucher_code}
+                                                className="bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-sm transition-all"
+                                            >
+                                                {isValidatingVoucher ? <Loader2 size={14} className="animate-spin" /> : 'Apply'}
+                                            </button>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={handleRemoveVoucher}
+                                                className="bg-rose-50 hover:bg-rose-100 text-rose-500 px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest border border-rose-100 transition-all"
+                                            >
+                                                <X size={14} />
+                                            </button>
+                                        )}
+                                    </div>
+                                    {voucherError && <p className="text-[9px] text-rose-500 font-bold ml-1 animate-in slide-in-from-top-1">{voucherError}</p>}
+                                    {voucherData && (
+                                        <p className="text-[9px] text-emerald-600 font-black ml-1 uppercase tracking-widest flex items-center gap-1 animate-in zoom-in-95">
+                                            <Check size={10} /> Voucher Applied
+                                        </p>
+                                    )}
+                                </div>
+
                                 <form onSubmit={handleSubmit}>
                                     <div className="flex flex-col gap-3 mb-8">
                                         <div className="flex justify-between items-center text-slate-500">

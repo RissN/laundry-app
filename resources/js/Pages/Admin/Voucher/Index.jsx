@@ -33,7 +33,7 @@ export default function Index({ vouchers }) {
     };
 
     const handleToggleStatus = (id) => {
-        patch(route('operator.voucher.update', id));
+        patch(route('admin.voucher.update', id));
     };
 
     const handleDelete = (id) => {
@@ -49,7 +49,7 @@ export default function Index({ vouchers }) {
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    destroy(route('operator.voucher.destroy', id), {
+                    destroy(route('admin.voucher.destroy', id), {
                         onSuccess: () => {
                             Swal.default.fire('Berhasil!', 'Voucher telah dihapus.', 'success');
                         }
@@ -61,7 +61,7 @@ export default function Index({ vouchers }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        postVoucher(route('operator.voucher.store'), {
+        postVoucher(route('admin.voucher.store'), {
             onSuccess: () => {
                 setIsCreating(false);
                 reset();
@@ -97,9 +97,9 @@ export default function Index({ vouchers }) {
                                 <div className="w-12 h-12 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center shadow-sm">
                                     <Plus size={24} />
                                 </div>
-                                <div>
+                                <div className="flex-1">
                                     <h3 className="text-lg font-black text-slate-800 tracking-tight">Buat Voucher</h3>
-                                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Baru & Promosi</p>
+                                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Akses Admin Only</p>
                                 </div>
                             </div>
                         </div>
@@ -276,7 +276,7 @@ export default function Index({ vouchers }) {
                                     ))}
                                     {vouchers.data.length === 0 && (
                                         <tr>
-                                            <td colSpan="4" className="px-8 py-20 text-center">
+                                            <td colSpan="5" className="px-8 py-20 text-center">
                                                 <div className="flex flex-col items-center justify-center space-y-4">
                                                     <div className="w-16 h-16 rounded-3xl bg-gray-50 text-gray-200 flex items-center justify-center">
                                                         <Ticket size={32} />
@@ -290,7 +290,6 @@ export default function Index({ vouchers }) {
                             </table>
                         </div>
                         
-                        {/* Pagination placeholder if needed */}
                         {vouchers.links.length > 3 && (
                             <div className="px-8 py-6 border-t border-gray-50 bg-gray-50/20 flex justify-center gap-2">
                                 {vouchers.links.map((link, i) => (

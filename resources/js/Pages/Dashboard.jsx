@@ -177,7 +177,7 @@ function OperatorView({ stats, extraData, formatCurrency }) {
                                             {order.order_status === 1 ? 'Selesai' : 'Diproses'}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-right font-bold text-slate-900 tracking-tight">{formatCurrency(order.total)}</td>
+                                    <td className="px-6 py-4 text-right font-bold text-slate-900 tracking-tight">{formatCurrency(order.final_total ?? order.total)}</td>
                                 </tr>
                             ))}
                         </tbody>

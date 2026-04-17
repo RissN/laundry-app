@@ -73,7 +73,7 @@ export default function AuthenticatedLayout({ header, children }) {
             links: [
                 { name: 'Terima Laundry', route: 'operator.transaction.create', icon: PlusCircle, allowed: [1, 2] },
                 { name: 'Pengambilan & Bayar', route: 'operator.pickup.index', icon: HandCoins, allowed: [1, 2] },
-                { name: 'Manajemen Voucher', route: 'operator.voucher.index', icon: Ticket, allowed: [1, 2] },
+                { name: 'Manajemen Voucher', route: 'admin.voucher.index', icon: Ticket, allowed: [1] },
             ]
         },
         {

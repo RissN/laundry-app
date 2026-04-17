@@ -103,7 +103,7 @@ export default function Index({ orders, totalRevenue, filters }) {
                                     <td className="px-6 py-4 font-mono text-gray-500">{order.order_date}</td>
                                     <td className="px-6 py-4 font-mono text-gray-500">{order.order_end_date || '-'}</td>
                                     <td className="px-6 py-4 font-medium text-gray-800">{order.customer?.customer_name}</td>
-                                    <td className="px-6 py-4 text-right font-black text-rose-600">{formatCurrency(order.total)}</td>
+                                    <td className="px-6 py-4 text-right font-black text-rose-600">{formatCurrency(order.final_total ?? order.total)}</td>
                                 </tr>
                             ))}
                             {orders.data.length === 0 && (

@@ -7,6 +7,7 @@ use App\Models\TransOrder;
 use App\Models\TransLaundryPickup;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -26,7 +27,7 @@ class DashboardController extends Controller
                 'total_orders_today' => TransOrder::whereDate('order_date', date('Y-m-d'))->count(),
                 'revenue_today' => (int) TransOrder::whereDate('order_end_date', date('Y-m-d'))
                     ->where('order_status', 1)
-                    ->sum('total')
+                    ->sum(DB::raw('COALESCE(final_total, total)')),
             ];
         } elseif ($userLevel == 2) { // Operator
             $stats = [
@@ -44,7 +45,7 @@ class DashboardController extends Controller
                 'monthly_revenue' => (int) TransOrder::whereMonth('order_date', date('m'))
                     ->whereYear('order_date', date('Y'))
                     ->where('order_status', 1)
-                    ->sum('total'),
+                    ->sum(DB::raw('COALESCE(final_total, total)')),
                 'monthly_orders' => TransOrder::whereMonth('order_date', date('m'))
                     ->whereYear('order_date', date('Y'))
                     ->count(),

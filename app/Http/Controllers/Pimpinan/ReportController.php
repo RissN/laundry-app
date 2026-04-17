@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TransOrder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -21,7 +22,7 @@ class ReportController extends Controller
         }
 
         $orders = $query->paginate(20)->withQueryString();
-        $totalRevenue = $query->where('order_status', 1)->sum('total');
+        $totalRevenue = $query->where('order_status', 1)->sum(DB::raw('COALESCE(final_total, total)'));
 
         return Inertia::render('Pimpinan/Report/Index', [
             'orders' => $orders,
