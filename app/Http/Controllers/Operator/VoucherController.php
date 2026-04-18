@@ -37,6 +37,14 @@ class VoucherController extends Controller
             ], 422);
         }
 
+        // Check for usage limit
+        if ($voucher->usage_limit && $voucher->usages()->count() >= $voucher->usage_limit) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Voucher ini sudah mencapai batas pemakaian.',
+            ], 422);
+        }
+
         if ($request->id_customer) {
             $alreadyUsed = \App\Models\TransVoucherUsage::where('id_voucher', $voucher->id)
                 ->whereHas('order', function($q) use ($request) {

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('vouchers', function (Blueprint $table) {
-            $table->date('expires_at')->nullable()->after('is_active');
+            $table->integer('usage_limit')->nullable()->after('is_active');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('vouchers', function (Blueprint $table) {
-            $table->dropColumn('expires_at');
+            $table->dropColumn('usage_limit');
         });
     }
 };

@@ -29,12 +29,14 @@ class VoucherController extends Controller
         $request->validate([
             'code' => 'required|string|max:50|unique:vouchers,code',
             'expires_at' => 'nullable|date',
+            'usage_limit' => 'nullable|integer|min:1',
         ]);
 
         Voucher::create([
             'code' => strtoupper($request->code),
             'is_active' => true,
             'expires_at' => $request->expires_at,
+            'usage_limit' => $request->usage_limit,
         ]);
 
         return redirect()->route('admin.voucher.index')->with('success', 'Voucher created successfully.');

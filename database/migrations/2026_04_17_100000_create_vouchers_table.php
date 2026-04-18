@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code', 50)->unique();
             $table->boolean('is_active')->default(true);
+            $table->date('expires_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

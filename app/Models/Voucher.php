@@ -14,11 +14,13 @@ class Voucher extends Model
         'code',
         'is_active',
         'expires_at',
+        'usage_limit',
     ];
 
     protected $casts = [
         'expires_at' => 'date',
         'is_active' => 'boolean',
+        'usage_limit' => 'integer',
     ];
 
     public function usages()

@@ -20,7 +20,8 @@ export default function Index({ vouchers }) {
     const { data, setData, post: postVoucher, processing, reset, errors } = useForm({
         code: '',
         expires_at: '',
-        duration: ''
+        duration: '',
+        usage_limit: ''
     });
 
     const generateRandomCode = () => {
@@ -161,6 +162,19 @@ export default function Index({ vouchers }) {
                                     {errors.expires_at && <p className="text-[10px] text-rose-500 font-bold ml-1">{errors.expires_at}</p>}
                                 </div>
 
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Batas Pemakaian (Opsional)</label>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        value={data.usage_limit}
+                                        onChange={(e) => setData('usage_limit', e.target.value)}
+                                        placeholder="Kosongkan untuk tanpa batas"
+                                        className="block w-full rounded-2xl border-gray-100 bg-white py-3.5 px-6 text-gray-800 focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all font-bold shadow-sm"
+                                    />
+                                    {errors.usage_limit && <p className="text-[10px] text-rose-500 font-bold ml-1">{errors.usage_limit}</p>}
+                                </div>
+
                                 <div className="p-6 bg-amber-50 rounded-3xl border border-amber-100 space-y-3">
                                     <div className="flex items-center gap-2 text-amber-700">
                                         <Calendar size={14} />
@@ -249,9 +263,16 @@ export default function Index({ vouchers }) {
                                                 )}
                                             </td>
                                             <td className="px-8 py-6">
-                                                <div className="flex items-center gap-2 font-bold text-slate-600 italic">
-                                                    <History size={14} className="text-slate-300" />
-                                                    {voucher.usages_count}x Digunakan
+                                                <div className="flex flex-col gap-1 font-bold text-slate-600 italic">
+                                                    <div className="flex items-center gap-2">
+                                                        <History size={14} className="text-slate-300" />
+                                                        {voucher.usages_count}x Digunakan
+                                                    </div>
+                                                    {voucher.usage_limit && (
+                                                        <div className="text-[10px] text-slate-400 not-italic">
+                                                            Limit: {voucher.usage_limit} pemakaian
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6 text-right">
