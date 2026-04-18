@@ -33,7 +33,7 @@ class UserController extends Controller
         ]);
         $validated['password'] = Hash::make($validated['password']);
         User::create($validated);
-        return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil ditambahkan.');
     }
 
     public function edit(User $user)
@@ -57,12 +57,12 @@ class UserController extends Controller
             $validated['password'] = Hash::make($validated['password']);
         }
         $user->update($validated);
-        return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil diperbarui.');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
     }
 }

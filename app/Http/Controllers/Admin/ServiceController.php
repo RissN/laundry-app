@@ -28,7 +28,7 @@ class ServiceController extends Controller
             'description' => 'nullable|string',
         ]);
         TypeOfService::create($validated);
-        return redirect()->route('admin.services.index')->with('success', 'Service created successfully.');
+        return redirect()->route('admin.services.index')->with('success', 'Layanan berhasil ditambahkan.');
     }
 
     public function edit(TypeOfService $service)
@@ -44,12 +44,12 @@ class ServiceController extends Controller
             'description' => 'nullable|string',
         ]);
         $service->update($validated);
-        return redirect()->route('admin.services.index')->with('success', 'Service updated successfully.');
+        return redirect()->route('admin.services.index')->with('success', 'Layanan berhasil diperbarui.');
     }
 
     public function destroy(TypeOfService $service)
     {
         $service->delete();
-        return redirect()->route('admin.services.index')->with('success', 'Service deleted successfully.');
+        return redirect()->route('admin.services.index')->with('success', 'Layanan berhasil dihapus.');
     }
 }

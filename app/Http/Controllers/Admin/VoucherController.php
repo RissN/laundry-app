@@ -39,7 +39,7 @@ class VoucherController extends Controller
             'usage_limit' => $request->usage_limit,
         ]);
 
-        return redirect()->route('admin.voucher.index')->with('success', 'Voucher created successfully.');
+        return redirect()->route('admin.voucher.index')->with('success', 'Voucher berhasil dibuat.');
     }
 
     /**
@@ -51,7 +51,7 @@ class VoucherController extends Controller
             'is_active' => !$voucher->is_active,
         ]);
 
-        return back()->with('success', 'Voucher status updated.');
+        return back()->with('success', 'Status voucher berhasil diperbarui.');
     }
 
     /**
@@ -60,6 +60,6 @@ class VoucherController extends Controller
     public function destroy(Voucher $voucher)
     {
         $voucher->delete();
-        return back()->with('success', 'Voucher deleted.');
+        return back()->with('success', 'Voucher berhasil dihapus.');
     }
 }

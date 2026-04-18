@@ -148,10 +148,10 @@ class TransactionController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('operator.pickup.index')->with('success', "Order $orderCode created successfully.");
+            return redirect()->route('operator.pickup.index')->with('success', "Order $orderCode berhasil dibuat.");
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Transaction failed: ' . $e->getMessage());
+            return back()->with('error', 'Transaksi gagal: ' . $e->getMessage());
         }
     }
 }

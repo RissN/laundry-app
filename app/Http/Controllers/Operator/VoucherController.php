@@ -25,7 +25,7 @@ class VoucherController extends Controller
         if (!$voucher) {
             return response()->json([
                 'success' => false,
-                'message' => 'Voucher code is invalid or inactive.',
+                'message' => 'Kode voucher tidak valid atau sudah tidak aktif.',
             ], 404);
         }
 

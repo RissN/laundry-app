@@ -24,7 +24,7 @@ class PickupController extends Controller
     public function store(Request $request, TransOrder $order)
     {
         if ($order->order_status != 0) {
-            return back()->with('error', 'Order has already been picked up.');
+            return back()->with('error', 'Order ini sudah diambil sebelumnya.');
         }
 
         $payableAmount = $order->final_total ?? $order->total;
@@ -56,10 +56,10 @@ class PickupController extends Controller
             ]);
 
             DB::commit();
-            return back()->with('success', 'Order picked up and payment processed successfully. Change: Rp ' . number_format($order_change, 0, ',', '.'));
+            return back()->with('success', 'Pengambilan berhasil diproses. Kembalian: Rp ' . number_format($order_change, 0, ',', '.'));
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Pickup failed: ' . $e->getMessage());
+            return back()->with('error', 'Pengambilan gagal: ' . $e->getMessage());
         }
     }
 }

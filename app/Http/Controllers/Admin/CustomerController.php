@@ -28,7 +28,7 @@ class CustomerController extends Controller
             'address' => 'required|string',
         ]);
         Customer::create($validated);
-        return redirect()->route('admin.customers.index')->with('success', 'Customer created successfully.');
+        return redirect()->route('admin.customers.index')->with('success', 'Customer berhasil ditambahkan.');
     }
 
     public function edit(Customer $customer)
@@ -44,12 +44,12 @@ class CustomerController extends Controller
             'address' => 'required|string',
         ]);
         $customer->update($validated);
-        return redirect()->route('admin.customers.index')->with('success', 'Customer updated successfully.');
+        return redirect()->route('admin.customers.index')->with('success', 'Customer berhasil diperbarui.');
     }
 
     public function destroy(Customer $customer)
     {
         $customer->delete();
-        return redirect()->route('admin.customers.index')->with('success', 'Customer deleted successfully.');
+        return redirect()->route('admin.customers.index')->with('success', 'Customer berhasil dihapus.');
     }
 }
