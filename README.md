@@ -4,7 +4,7 @@ Sistem Informasi Laundry ini dirancang secara spesifik sebagai solusi manajemen 
 
 ---
 
-## Tech Stack & Spesifikasi Teknologi 🛠️
+## Tech Stack & Spesifikasi Teknologi
 
 Sistem ini dikembangkan menggunakan kombinasi teknologi web terbaru (Modern Full-Stack) untuk menjamin performa, keamanan, dan *user experience* yang mewah:
 
@@ -17,7 +17,7 @@ Sistem ini dikembangkan menggunakan kombinasi teknologi web terbaru (Modern Full
 
 ---
 
-## Panduan Instalasi (Setup Project) ⚙️
+## Panduan Instalasi (Setup Project)
 
 Ikuti langkah-langkah di bawah ini untuk menjalankan project di lingkungan lokal Anda:
 
@@ -69,16 +69,16 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan project di lingkungan lokal
 
 Sistem ini memiliki Dashboard dinamis yang menyesuaikan dengan level otoritas pengguna:
 
-### 📊 Dashboard Admin
+### Dashboard Admin
 - **Metrik Sistem**: Total pelanggan terdaftar, jumlah order hari ini, dan total pendapatan harian.
 - **Manajemen Master**: Kendali penuh atas data layanan (Service) dan manajemen akun pengguna (User).
 
-### 🧺 Dashboard Operator (Kasir)
+### Dashboard Operator (Kasir)
 - **Metrik Operasional**: Jumlah transaksi masuk hari ini, daftar antrean pengambilan (Pending Pickups), dan total pickup sukses.
 - **Transaksi Terbaru**: Tabel *real-time* yang menampilkan aktivitas laundry terbaru.
 - **POS (Point of Sale)**: Menu "Terima Laundry" yang telah dirombak dengan UI mewah, memudahkan input berat, estimasi harga, dan data pelanggan baru secara instan.
 
-### 📈 Dashboard Pimpinan
+### Dashboard Pimpinan
 - **Analisis Performa**: Statistik mingguan/bulanan mengenai total order dan total pendapatan.
 - **Laporan Penjualan**: Filter laporan berdasarkan rentang tanggal untuk kebutuhan audit dan rekapitulasi.
 
@@ -111,7 +111,7 @@ import { WashingMachine, User } from 'lucide-react';
 <WashingMachine size={24} />
 ```
 
-### Panduan Kustomisasi Warna (Tailwind v4) 🎨
+### Panduan Kustomisasi Warna (Tailwind v4)
 
 Aplikasi ini menggunakan skema warna yang fleksibel melalui **Tailwind CSS v4**. Anda dapat mengubah seluruh suasana aplikasi hanya dengan memodifikasi satu file: `resources/css/app.css`.
 
@@ -153,7 +153,7 @@ Kami menggunakan plugin `tailwindcss-animate` untuk transisi halus pada kartu da
 
 ---
 
-## 🚀 Langkah Produksi
+## Langkah Produksi
 Sebelum melakukan deployment, pastikan aset frontend telah dioptimasi:
 ```bash
 npm run build
