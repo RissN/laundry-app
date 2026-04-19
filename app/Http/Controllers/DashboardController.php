@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\User;
+use App\Models\TypeOfService;
 use App\Models\TransOrder;
 use App\Models\TransLaundryPickup;
 use Illuminate\Http\Request;
@@ -24,16 +26,13 @@ class DashboardController extends Controller
         if ($userLevel == 1) { // Admin
             $stats = [
                 'total_customers' => Customer::count(),
-                'total_orders_today' => TransOrder::whereDate('order_date', date('Y-m-d'))->count(),
-                'revenue_today' => (int) TransOrder::whereDate('order_end_date', date('Y-m-d'))
-                    ->where('order_status', 1)
-                    ->sum(DB::raw('COALESCE(final_total, total)')),
+                'total_users'     => User::count(),
+                'total_services'  => TypeOfService::count(),
             ];
         } elseif ($userLevel == 2) { // Operator
             $stats = [
-                'orders_today' => TransOrder::whereDate('order_date', date('Y-m-d'))->count(),
+                'orders_today'    => TransOrder::whereDate('order_date', date('Y-m-d'))->count(),
                 'pending_pickups' => TransOrder::doesntHave('pickup')->count(),
-                'pickups_today' => TransLaundryPickup::whereDate('pickup_date', date('Y-m-d'))->count(),
             ];
             
             $extraData['recent_transactions'] = TransOrder::with('customer')
@@ -50,6 +49,12 @@ class DashboardController extends Controller
                     ->whereYear('order_date', date('Y'))
                     ->count(),
             ];
+
+            $extraData['recent_sales'] = TransOrder::with('customer')
+                ->where('order_status', 1)
+                ->latest('order_end_date')
+                ->take(10)
+                ->get();
         }
 
         return Inertia::render('Dashboard', [
