@@ -32,26 +32,25 @@ export default function Login({ status }) {
             }}>
                 <div style={{
                     background: '#fff',
-                    borderRadius: '16px',
+                    borderRadius: '12px',
                     padding: '2.5rem',
                     width: '100%',
                     maxWidth: '400px',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
                     border: '1px solid #e2e8f0',
                 }}>
                     {/* Logo */}
                     <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                         <div style={{
-                            width: '56px',
-                            height: '56px',
+                            width: '52px',
+                            height: '52px',
                             background: '#0284c7',
-                            borderRadius: '14px',
+                            borderRadius: '10px',
                             display: 'inline-flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             marginBottom: '0.75rem',
                         }}>
-                            <WashingMachine size={28} color="white" />
+                            <WashingMachine size={26} color="white" />
                         </div>
                         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>LaundriQ</h1>
                         <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '0.25rem' }}>Masuk ke akun Anda</p>
@@ -63,7 +62,7 @@ export default function Login({ status }) {
                             border: '1px solid #bbf7d0',
                             color: '#16a34a',
                             padding: '0.75rem',
-                            borderRadius: '10px',
+                            borderRadius: '8px',
                             fontSize: '0.85rem',
                             marginBottom: '1.25rem',
                             textAlign: 'center',
@@ -86,17 +85,17 @@ export default function Login({ status }) {
                                     onChange={(e) => setData('email', e.target.value)}
                                     style={{
                                         width: '100%',
-                                        padding: '0.75rem 0.75rem 0.75rem 2.5rem',
+                                        padding: '0.7rem 0.75rem 0.7rem 2.5rem',
                                         border: '1px solid #e2e8f0',
-                                        borderRadius: '10px',
+                                        borderRadius: '8px',
                                         fontSize: '0.9rem',
                                         outline: 'none',
                                         background: '#f8fafc',
                                         color: '#1e293b',
                                         boxSizing: 'border-box',
                                     }}
-                                    onFocus={(e) => { e.target.style.borderColor = '#0284c7'; e.target.style.boxShadow = '0 0 0 3px rgba(2,132,199,0.1)'; }}
-                                    onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = 'none'; }}
+                                    onFocus={(e) => { e.target.style.borderColor = '#0284c7'; }}
+                                    onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; }}
                                 />
                             </div>
                             {errors.email && <p style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: '0.3rem' }}>{errors.email}</p>}
@@ -116,17 +115,17 @@ export default function Login({ status }) {
                                     onChange={(e) => setData('password', e.target.value)}
                                     style={{
                                         width: '100%',
-                                        padding: '0.75rem 2.5rem 0.75rem 2.5rem',
+                                        padding: '0.7rem 2.5rem 0.7rem 2.5rem',
                                         border: '1px solid #e2e8f0',
-                                        borderRadius: '10px',
+                                        borderRadius: '8px',
                                         fontSize: '0.9rem',
                                         outline: 'none',
                                         background: '#f8fafc',
                                         color: '#1e293b',
                                         boxSizing: 'border-box',
                                     }}
-                                    onFocus={(e) => { e.target.style.borderColor = '#0284c7'; e.target.style.boxShadow = '0 0 0 3px rgba(2,132,199,0.1)'; }}
-                                    onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = 'none'; }}
+                                    onFocus={(e) => { e.target.style.borderColor = '#0284c7'; }}
+                                    onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; }}
                                 />
                                 <button
                                     type="button"
@@ -157,10 +156,10 @@ export default function Login({ status }) {
                             disabled={processing}
                             style={{
                                 width: '100%',
-                                padding: '0.8rem',
+                                padding: '0.75rem',
                                 background: '#0284c7',
                                 border: 'none',
-                                borderRadius: '10px',
+                                borderRadius: '8px',
                                 color: 'white',
                                 fontSize: '0.9rem',
                                 fontWeight: 600,

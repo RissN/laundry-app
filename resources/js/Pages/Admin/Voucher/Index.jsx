@@ -44,7 +44,7 @@ export default function Index({ vouchers }) {
                 text: "Voucher yang dihapus tidak dapat dipulihkan.",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#0ea5e9',
+                confirmButtonColor: '#0284c7',
                 cancelButtonColor: '#f43f5e',
                 confirmButtonText: 'Ya, Hapus!',
                 cancelButtonText: 'Batal'
@@ -89,50 +89,48 @@ export default function Index({ vouchers }) {
         <AuthenticatedLayout header="Manajemen Voucher">
             <Head title="Manajemen Voucher" />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Left Column: Create Voucher */}
                 <div className="lg:col-span-1">
-                    <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden sticky top-8">
-                        <div className="p-8 border-b border-gray-50 bg-gray-50/30">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center shadow-sm">
-                                    <Plus size={24} />
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden sticky top-8">
+                        <div className="p-5 border-b border-gray-100">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
+                                    <Plus size={20} />
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="text-lg font-black text-slate-800 tracking-tight">Buat Voucher</h3>
-                                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Akses Admin Only</p>
+                                    <h3 className="text-base font-bold text-gray-800">Buat Voucher</h3>
+                                    <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Akses Admin Only</p>
                                 </div>
                             </div>
                         </div>
                         
-                        <div className="p-8">
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Kode Voucher</label>
+                        <div className="p-5">
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Kode Voucher</label>
                                     <div className="flex gap-2">
-                                        <div className="relative flex-1 group">
-                                            <input
-                                                type="text"
-                                                value={data.code}
-                                                onChange={(e) => setData('code', e.target.value.toUpperCase())}
-                                                placeholder="Contoh: PROMO50"
-                                                className="block w-full rounded-2xl border-gray-100 bg-white py-3.5 px-6 text-gray-800 focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all font-bold shadow-sm"
-                                            />
-                                        </div>
+                                        <input
+                                            type="text"
+                                            value={data.code}
+                                            onChange={(e) => setData('code', e.target.value.toUpperCase())}
+                                            placeholder="Contoh: PROMO50"
+                                            className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-800 focus:ring-2 focus:ring-sky-200 focus:border-sky-400 transition-colors font-bold"
+                                        />
                                         <button 
                                             type="button"
                                             onClick={generateRandomCode}
-                                            className="w-12 h-12 bg-sky-50 text-sky-600 rounded-2xl border border-sky-100 flex items-center justify-center hover:bg-sky-100 transition-all active:scale-95 shadow-sm"
+                                            className="w-10 h-10 bg-sky-50 text-sky-600 rounded-lg border border-sky-100 flex items-center justify-center hover:bg-sky-100 transition-colors"
                                             title="Generate Kode Acak"
                                         >
-                                            <RefreshCw size={18} />
+                                            <RefreshCw size={16} />
                                         </button>
                                     </div>
-                                    {errors.code && <p className="text-[10px] text-rose-500 font-bold ml-1">{errors.code}</p>}
+                                    {errors.code && <p className="text-xs text-rose-500 font-medium">{errors.code}</p>}
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Masa Berlaku</label>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Masa Berlaku</label>
                                     <select
                                         value={data.duration || ''}
                                         onChange={(e) => {
@@ -153,46 +151,46 @@ export default function Index({ vouchers }) {
                                                 expires_at: expiry
                                             }));
                                         }}
-                                        className="block w-full rounded-2xl border-gray-100 bg-white py-3.5 px-6 text-gray-800 focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all font-bold shadow-sm"
+                                        className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-800 focus:ring-2 focus:ring-sky-200 focus:border-sky-400 transition-colors font-medium"
                                     >
                                         <option value="">Selamanya</option>
                                         <option value="week">1 Minggu (7 Hari)</option>
                                         <option value="month">1 Bulan (30 Hari)</option>
                                     </select>
-                                    {errors.expires_at && <p className="text-[10px] text-rose-500 font-bold ml-1">{errors.expires_at}</p>}
+                                    {errors.expires_at && <p className="text-xs text-rose-500 font-medium">{errors.expires_at}</p>}
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">Batas Pemakaian (Opsional)</label>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Batas Pemakaian (Opsional)</label>
                                     <input
                                         type="number"
                                         min="1"
                                         value={data.usage_limit}
                                         onChange={(e) => setData('usage_limit', e.target.value)}
                                         placeholder="Kosongkan untuk tanpa batas"
-                                        className="block w-full rounded-2xl border-gray-100 bg-white py-3.5 px-6 text-gray-800 focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition-all font-bold shadow-sm"
+                                        className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-800 focus:ring-2 focus:ring-sky-200 focus:border-sky-400 transition-colors font-medium"
                                     />
-                                    {errors.usage_limit && <p className="text-[10px] text-rose-500 font-bold ml-1">{errors.usage_limit}</p>}
+                                    {errors.usage_limit && <p className="text-xs text-rose-500 font-medium">{errors.usage_limit}</p>}
                                 </div>
 
-                                <div className="p-6 bg-amber-50 rounded-3xl border border-amber-100 space-y-3">
+                                <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 space-y-2">
                                     <div className="flex items-center gap-2 text-amber-700">
                                         <Calendar size={14} />
-                                        <span className="text-[10px] font-black uppercase tracking-widest">Aturan Bisnis</span>
+                                        <span className="text-xs font-bold uppercase tracking-wide">Aturan Bisnis</span>
                                     </div>
-                                    <ul className="text-[11px] text-amber-800 font-bold space-y-2">
-                                        <li className="flex items-start gap-2">• Diskon 10% untuk Non-Member</li>
-                                        <li className="flex items-start gap-2">• Diskon 15% untuk Member Terdaftar</li>
-                                        <li className="flex items-start gap-2">• Sekali pakai & langsung hangus</li>
+                                    <ul className="text-xs text-amber-800 font-medium space-y-1">
+                                        <li>• Diskon 10% untuk Non-Member</li>
+                                        <li>• Diskon 15% untuk Member Terdaftar</li>
+                                        <li>• Sekali pakai & langsung hangus</li>
                                     </ul>
                                 </div>
 
                                 <button
                                     type="submit"
                                     disabled={processing || !data.code}
-                                    className="w-full bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-sky-100 transition-all flex items-center justify-center gap-3"
+                                    className="w-full bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white py-3 rounded-lg font-bold text-sm uppercase tracking-wide transition-colors flex items-center justify-center gap-2"
                                 >
-                                    <Ticket size={20} />
+                                    <Ticket size={18} />
                                     Simpan Voucher
                                 </button>
                             </form>
@@ -202,94 +200,94 @@ export default function Index({ vouchers }) {
 
                 {/* Right Column: Voucher List */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="p-8 border-b border-gray-50 flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center shadow-sm">
-                                    <History size={24} />
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                                    <History size={20} />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-black text-slate-800 tracking-tight">Riwayat & Daftar Voucher</h3>
-                                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Total: {vouchers.total} Voucher</p>
+                                    <h3 className="text-base font-bold text-gray-800">Riwayat & Daftar Voucher</h3>
+                                    <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Total: {vouchers.total} Voucher</p>
                                 </div>
                             </div>
                         </div>
 
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
-                                <thead className="bg-gray-50/50 border-b border-gray-100">
+                                <thead className="bg-gray-50 border-b border-gray-100">
                                     <tr>
-                                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Kode</th>
-                                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Berlaku Sampai</th>
-                                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Status</th>
-                                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Pemakaian</th>
-                                        <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Aksi</th>
+                                        <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Kode</th>
+                                        <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Berlaku Sampai</th>
+                                        <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Status</th>
+                                        <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Pemakaian</th>
+                                        <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500 text-right">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-50">
+                                <tbody className="divide-y divide-gray-100">
                                     {vouchers.data.map((voucher) => (
-                                        <tr key={voucher.id} className="hover:bg-sky-50/30 transition-all duration-300">
-                                            <td className="px-8 py-6">
-                                                <div className="flex items-center gap-3">
-                                                    <span className="bg-white border border-gray-200 px-3 py-1.5 rounded-xl text-sm font-black text-slate-700 shadow-sm">{voucher.code}</span>
+                                        <tr key={voucher.id} className="hover:bg-gray-50 transition-colors">
+                                            <td className="px-5 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="bg-gray-50 border border-gray-200 px-2.5 py-1 rounded-lg text-sm font-bold text-gray-700">{voucher.code}</span>
                                                     <button 
                                                         onClick={() => copyToClipboard(voucher.code)}
-                                                        className="p-1.5 text-slate-300 hover:text-sky-500 transition-colors"
+                                                        className="p-1 text-gray-300 hover:text-sky-500 transition-colors"
                                                         title="Salin Kode"
                                                     >
-                                                        <Copy size={16} />
+                                                        <Copy size={14} />
                                                     </button>
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-6">
+                                            <td className="px-5 py-4">
                                                 <div className="flex flex-col">
-                                                    <span className="text-xs font-bold text-slate-600">
+                                                    <span className="text-xs font-semibold text-gray-600">
                                                         {voucher.expires_at ? new Date(voucher.expires_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Selamanya'}
                                                     </span>
                                                     {voucher.expires_at && new Date(voucher.expires_at) < new Date().setHours(0,0,0,0) && (
-                                                        <span className="text-[8px] font-black text-rose-500 uppercase tracking-tighter">Sudah Kadaluarsa</span>
+                                                        <span className="text-xs text-rose-500 font-semibold">Sudah Kadaluarsa</span>
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-6">
+                                            <td className="px-5 py-4">
                                                 {voucher.is_active ? (
-                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-widest">
-                                                        <CheckCircle2 size={10} /> Aktif
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold">
+                                                        <CheckCircle2 size={12} /> Aktif
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-[10px] font-black uppercase tracking-widest">
-                                                        <XCircle size={10} /> Nonaktif
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-gray-500 text-xs font-semibold">
+                                                        <XCircle size={12} /> Nonaktif
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="px-8 py-6">
-                                                <div className="flex flex-col gap-1 font-bold text-slate-600 italic">
-                                                    <div className="flex items-center gap-2">
-                                                        <History size={14} className="text-slate-300" />
+                                            <td className="px-5 py-4">
+                                                <div className="flex flex-col gap-0.5 text-sm font-semibold text-gray-600">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <History size={14} className="text-gray-300" />
                                                         {voucher.usages_count}x Digunakan
                                                     </div>
                                                     {voucher.usage_limit && (
-                                                        <div className="text-[10px] text-slate-400 not-italic">
+                                                        <div className="text-xs text-gray-400">
                                                             Limit: {voucher.usage_limit} pemakaian
                                                         </div>
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-6 text-right">
+                                            <td className="px-5 py-4 text-right">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button 
                                                         onClick={() => handleToggleStatus(voucher.id)}
-                                                        className={`p-2.5 rounded-xl transition-all shadow-sm border ${voucher.is_active ? 'bg-amber-50 border-amber-100 text-amber-500 hover:bg-amber-100' : 'bg-emerald-50 border-emerald-100 text-emerald-500 hover:bg-emerald-100'}`}
+                                                        className={`p-2 rounded-lg transition-colors border ${voucher.is_active ? 'bg-amber-50 border-amber-100 text-amber-500 hover:bg-amber-100' : 'bg-emerald-50 border-emerald-100 text-emerald-500 hover:bg-emerald-100'}`}
                                                         title={voucher.is_active ? "Nonaktifkan" : "Aktifkan Kembali"}
                                                     >
-                                                        <Power size={18} />
+                                                        <Power size={16} />
                                                     </button>
                                                     <button 
                                                         onClick={() => handleDelete(voucher.id)}
-                                                        className="p-2.5 bg-rose-50 border border-rose-100 text-rose-500 rounded-xl hover:bg-rose-100 transition-all shadow-sm"
+                                                        className="p-2 bg-rose-50 border border-rose-100 text-rose-500 rounded-lg hover:bg-rose-100 transition-colors"
                                                         title="Hapus Permanen"
                                                     >
-                                                        <Trash2 size={18} />
+                                                        <Trash2 size={16} />
                                                     </button>
                                                 </div>
                                             </td>
@@ -297,12 +295,12 @@ export default function Index({ vouchers }) {
                                     ))}
                                     {vouchers.data.length === 0 && (
                                         <tr>
-                                            <td colSpan="5" className="px-8 py-20 text-center">
-                                                <div className="flex flex-col items-center justify-center space-y-4">
-                                                    <div className="w-16 h-16 rounded-3xl bg-gray-50 text-gray-200 flex items-center justify-center">
-                                                        <Ticket size={32} />
+                                            <td colSpan="5" className="px-5 py-16 text-center">
+                                                <div className="flex flex-col items-center justify-center space-y-3">
+                                                    <div className="w-14 h-14 rounded-xl bg-gray-50 text-gray-200 flex items-center justify-center">
+                                                        <Ticket size={28} />
                                                     </div>
-                                                    <p className="text-xs text-slate-300 font-black uppercase tracking-[0.2em]">Belum ada data voucher</p>
+                                                    <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Belum ada data voucher</p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -312,13 +310,13 @@ export default function Index({ vouchers }) {
                         </div>
                         
                         {vouchers.links.length > 3 && (
-                            <div className="px-8 py-6 border-t border-gray-50 bg-gray-50/20 flex justify-center gap-2">
+                            <div className="px-5 py-4 border-t border-gray-100 flex justify-center gap-2">
                                 {vouchers.links.map((link, i) => (
                                     <Link
                                         key={i}
                                         href={link.url || '#'}
                                         dangerouslySetInnerHTML={{ __html: link.label }}
-                                        className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${link.active ? 'bg-sky-600 text-white shadow-lg shadow-sky-100' : 'bg-white border border-gray-100 text-slate-400 hover:text-sky-600'}`}
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${link.active ? 'bg-sky-600 text-white' : 'bg-gray-50 border border-gray-200 text-gray-400 hover:text-sky-600'}`}
                                     />
                                 ))}
                             </div>
