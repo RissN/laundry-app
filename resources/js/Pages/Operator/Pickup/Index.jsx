@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Head, useForm, router } from '@inertiajs/react';
+import React, { useState, useEffect } from 'react';
+import { Head, useForm, router, usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Printer } from 'lucide-react';
 
 export default function Index({ orders }) {
     const [selectedOrder, setSelectedOrder] = useState(null);
@@ -8,6 +9,30 @@ export default function Index({ orders }) {
         order_pay: '',
         notes: ''
     });
+
+    const { flash } = usePage().props;
+
+    // Show print dialog after new transaction is created
+    useEffect(() => {
+        if (flash?.new_order_id && flash?.success) {
+            import('sweetalert2').then((Swal) => {
+                Swal.default.fire({
+                    icon: 'success',
+                    title: 'Transaksi Berhasil!',
+                    html: `<p style="margin-bottom:12px;">${flash.success}</p>`,
+                    showCancelButton: true,
+                    confirmButtonColor: '#0284c7',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: '🖨️ Print Struk',
+                    cancelButtonText: 'Tutup',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.open(`/receipt/${flash.new_order_id}`, '_blank');
+                    }
+                });
+            });
+        }
+    }, []);
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount);
@@ -24,6 +49,10 @@ export default function Index({ orders }) {
     const closeModal = () => {
         setSelectedOrder(null);
         reset();
+    }
+
+    const handlePrintReceipt = (orderId) => {
+        window.open(`/receipt/${orderId}`, '_blank');
     }
 
     const handlePayment = (e) => {
@@ -46,8 +75,22 @@ export default function Index({ orders }) {
                 if (result.isConfirmed) {
                     post(route('operator.pickup.store', selectedOrder.id), {
                         onSuccess: () => {
+                            const orderId = selectedOrder.id;
                             closeModal();
-                            Swal.default.fire('Selesai!', 'Transaksi telah berhasil diselesaikan.', 'success');
+                            Swal.default.fire({
+                                icon: 'success',
+                                title: 'Selesai!',
+                                text: 'Transaksi telah berhasil diselesaikan.',
+                                showCancelButton: true,
+                                confirmButtonColor: '#0284c7',
+                                cancelButtonColor: '#6b7280',
+                                confirmButtonText: '🖨️ Print Struk',
+                                cancelButtonText: 'Tutup',
+                            }).then((result2) => {
+                                if (result2.isConfirmed) {
+                                    window.open(`/receipt/${orderId}?type=pickup`, '_blank');
+                                }
+                            });
                         }
                     });
                 }
@@ -75,7 +118,7 @@ export default function Index({ orders }) {
                             <tr>
                                 <th className="px-5 py-3">Kode Transaksi</th>
                                 <th className="px-5 py-3">Pelanggan</th>
-                                <th className="px-5 py-3">Tgl Masuk</th>
+                                <th className="px-5 py-3">Tgl Masuk & Estimasi</th>
                                 <th className="px-5 py-3">Layanan / Detail</th>
                                 <th className="px-5 py-3 text-center">Status Bayar</th>
                                 <th className="px-5 py-3 text-right">Total Tagihan</th>
@@ -98,7 +141,16 @@ export default function Index({ orders }) {
                                             </div>
                                         )}
                                     </td>
-                                    <td className="px-5 py-3 text-gray-600">{order.order_date}</td>
+                                    <td className="px-5 py-3">
+                                        <div className="flex flex-col gap-1">
+                                            <span className="text-gray-600 font-medium">{order.order_date}</span>
+                                            {order.estimated_completion_date && (
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-50 text-sky-600 w-fit border border-sky-100">
+                                                    Est: {new Date(order.estimated_completion_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </td>
                                     <td className="px-5 py-3 text-gray-500 text-xs">
                                         <ul className="list-disc list-inside">
                                             {order.details.map(detail => (
@@ -125,16 +177,25 @@ export default function Index({ orders }) {
                                         </span>
                                     </td>
                                     <td className="px-5 py-3 text-center">
-                                        <button 
-                                            onClick={() => openModal(order)} 
-                                            className={`font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
-                                                order.payment_status === 1
-                                                    ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
-                                                    : 'bg-sky-500 hover:bg-sky-600 text-white'
-                                            }`}
-                                        >
-                                            {order.payment_status === 1 ? 'Ambil' : 'Ambil & Bayar'}
-                                        </button>
+                                        <div className="flex items-center justify-center gap-1.5">
+                                            <button
+                                                onClick={() => handlePrintReceipt(order.id)}
+                                                className="p-2 bg-gray-100 text-gray-500 hover:bg-sky-50 hover:text-sky-600 rounded-lg transition-colors"
+                                                title="Print Struk"
+                                            >
+                                                <Printer size={15} />
+                                            </button>
+                                            <button 
+                                                onClick={() => openModal(order)} 
+                                                className={`font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
+                                                    order.payment_status === 1
+                                                        ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                                                        : 'bg-sky-500 hover:bg-sky-600 text-white'
+                                                }`}
+                                            >
+                                                {order.payment_status === 1 ? 'Ambil' : 'Ambil & Bayar'}
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -171,6 +232,16 @@ export default function Index({ orders }) {
                             </button>
                         </div>
                         
+                        {/* Estimate Date Banner */}
+                        {selectedOrder.estimated_completion_date && (
+                            <div className="bg-sky-50 rounded-lg p-3 flex items-center justify-between border border-sky-100 mb-4">
+                                <span className="text-xs font-bold uppercase tracking-wide text-sky-700">Estimasi Selesai</span>
+                                <span className="text-sm font-bold text-sky-600">
+                                    {new Date(selectedOrder.estimated_completion_date).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
+                                </span>
+                            </div>
+                        )}
+
                         {/* Order Total Info */}
                         <div className={`rounded-lg p-4 mb-5 border space-y-2 ${alreadyPaid ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}`}>
                             <div className={`flex justify-between items-center text-xs font-semibold uppercase tracking-wide ${alreadyPaid ? 'text-emerald-800' : 'text-rose-800'}`}>

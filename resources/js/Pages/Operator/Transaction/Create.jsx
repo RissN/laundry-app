@@ -24,7 +24,7 @@ import {
     Banknote
 } from 'lucide-react';
 
-export default function Create({ customers, services }) {
+export default function Create({ customers, services, activeQueueCount }) {
     const [isNewCustomer, setIsNewCustomer] = useState(false);
     const { data, setData, post, processing, errors } = useForm({
         id_customer: '',
@@ -37,7 +37,8 @@ export default function Create({ customers, services }) {
         non_member_name: '',
         non_member_phone: '',
         payment_method: 'pay_later',
-        order_pay: ''
+        order_pay: '',
+        estimated_completion_date: ''
     });
 
     const [voucherData, setVoucherData] = useState(null);
@@ -66,6 +67,34 @@ export default function Create({ customers, services }) {
         newItems[index][field] = value;
         setData('items', newItems);
     };
+
+    // Calculate Estimated Completion Date
+    React.useEffect(() => {
+        let maxServiceHours = 0;
+        data.items.forEach(item => {
+            const service = services.find(s => s.id == item.id_service);
+            if (service && service.estimated_hours) {
+                if (service.estimated_hours > maxServiceHours) {
+                    maxServiceHours = service.estimated_hours;
+                }
+            }
+        });
+
+        if (maxServiceHours > 0) {
+            // Queue adds 2 hours per active order
+            const additionalHours = activeQueueCount ? activeQueueCount * 2 : 0;
+            const totalHoursToWait = maxServiceHours + additionalHours;
+            
+            const estimatedDate = new Date();
+            estimatedDate.setHours(estimatedDate.getHours() + totalHoursToWait);
+            
+            // Format to YYYY-MM-DD
+            const formattedDate = estimatedDate.toISOString().split('T')[0];
+            setData('estimated_completion_date', formattedDate);
+        } else {
+            setData('estimated_completion_date', '');
+        }
+    }, [data.items, activeQueueCount]);
 
     const handleValidateVoucher = async () => {
         if (!data.voucher_code) return;
@@ -448,6 +477,21 @@ export default function Create({ customers, services }) {
                                     </div>
                                 )}
                             </div>
+
+                            {/* Estimated Date Notification */}
+                            {data.estimated_completion_date && data.items.some(i => i.id_service) && (
+                                <div className="mb-4 bg-sky-600 rounded-lg p-3 flex items-center gap-3">
+                                    <div className="bg-sky-500 rounded-full p-1.5 flex-shrink-0 text-white">
+                                        <CheckCircle size={16} />
+                                    </div>
+                                    <div>
+                                        <p className="text-sky-100 text-[10px] uppercase font-bold tracking-wide">Estimasi Selesai</p>
+                                        <p className="text-white text-sm font-bold">
+                                            {new Date(data.estimated_completion_date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
                             
                             {/* Calculation Details */}
                             <div className="space-y-4 pt-3 border-t border-dashed border-sky-200">

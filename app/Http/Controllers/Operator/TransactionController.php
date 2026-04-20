@@ -28,7 +28,8 @@ class TransactionController extends Controller
     {
         $customers = Customer::withCount('orders')->get();
         $services = TypeOfService::all();
-        return Inertia::render('Operator/Transaction/Create', compact('customers', 'services'));
+        $activeQueueCount = TransOrder::where('order_status', 0)->count();
+        return Inertia::render('Operator/Transaction/Create', compact('customers', 'services', 'activeQueueCount'));
     }
 
     public function store(Request $request)
@@ -47,6 +48,7 @@ class TransactionController extends Controller
             'non_member_phone' => 'required_if:is_non_member,true|string|nullable|max:20',
             'payment_method' => 'required|in:pay_later,pay_now',
             'order_pay' => 'nullable|numeric|min:0',
+            'estimated_completion_date' => 'nullable|date',
         ]);
 
         DB::beginTransaction();
@@ -145,6 +147,7 @@ class TransactionController extends Controller
                 'id_voucher' => $voucher ? $voucher->id : null,
                 'order_code' => $orderCode,
                 'order_date' => date('Y-m-d'),
+                'estimated_completion_date' => $request->estimated_completion_date,
                 'order_status' => 0,
                 'payment_status' => $paymentStatus,
                 'paid_at' => $paidAt,
@@ -176,7 +179,11 @@ class TransactionController extends Controller
             if ($payNow) {
                 $successMsg .= " Pembayaran lunas. Kembalian: Rp " . number_format($orderChange, 0, ',', '.');
             }
-            return redirect()->route('operator.pickup.index')->with('success', $successMsg);
+            return redirect()->route('operator.pickup.index')->with([
+                'success' => $successMsg,
+                'new_order_id' => $order->id,
+                'new_order_code' => $orderCode,
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Transaksi gagal: ' . $e->getMessage());

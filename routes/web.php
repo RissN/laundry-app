@@ -14,6 +14,7 @@ use App\Http\Controllers\Operator\TransactionController;
 use App\Http\Controllers\Operator\PickupController;
 use App\Http\Controllers\Operator\VoucherController;
 use App\Http\Controllers\Pimpinan\ReportController;
+use App\Http\Controllers\ReceiptController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -25,6 +26,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Receipt PDF (accessible by all authenticated users)
+    Route::get('/receipt/{order}', [ReceiptController::class, 'show'])->name('receipt.show');
 
     // Admin Routes (id_level = 1)
     Route::middleware(['role:1'])->prefix('admin')->name('admin.')->group(function () {
@@ -49,6 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Pimpinan Routes (id_level = 3)
     Route::middleware(['role:3'])->prefix('pimpinan')->name('pimpinan.')->group(function () {
         Route::get('report', [ReportController::class, 'index'])->name('report.index');
+        Route::get('report/pdf', [ReportController::class, 'exportPdf'])->name('report.pdf');
     });
 });
 
