@@ -27,25 +27,39 @@ class PickupController extends Controller
             return back()->with('error', 'Order ini sudah diambil sebelumnya.');
         }
 
+        $alreadyPaid = $order->payment_status == 1;
         $payableAmount = $order->final_total ?? $order->total;
 
-        $request->validate([
-            'order_pay' => 'required|numeric|min:' . $payableAmount,
-            'notes' => 'nullable|string'
-        ]);
-
-        $order_pay = $request->order_pay;
-        $order_change = $order_pay - $payableAmount;
+        // Jika belum bayar, wajib input pembayaran
+        if (!$alreadyPaid) {
+            $request->validate([
+                'order_pay' => 'required|numeric|min:' . $payableAmount,
+                'notes' => 'nullable|string'
+            ]);
+        } else {
+            $request->validate([
+                'notes' => 'nullable|string'
+            ]);
+        }
 
         DB::beginTransaction();
         try {
-            // Update order
-            $order->update([
+            $updateData = [
                 'order_end_date' => date('Y-m-d'),
                 'order_status' => 1, // Selesai / Diambil
-                'order_pay' => $order_pay,
-                'order_change' => $order_change,
-            ]);
+            ];
+
+            if (!$alreadyPaid) {
+                // Proses pembayaran saat pickup
+                $order_pay = $request->order_pay;
+                $order_change = $order_pay - $payableAmount;
+                $updateData['order_pay'] = $order_pay;
+                $updateData['order_change'] = $order_change;
+                $updateData['payment_status'] = 1;
+                $updateData['paid_at'] = now();
+            }
+
+            $order->update($updateData);
 
             // Create Pickup Record
             TransLaundryPickup::create([
@@ -56,6 +70,11 @@ class PickupController extends Controller
             ]);
 
             DB::commit();
+
+            if ($alreadyPaid) {
+                return back()->with('success', 'Pengambilan berhasil diproses. (Sudah lunas sebelumnya)');
+            }
+            $order_change = $request->order_pay - $payableAmount;
             return back()->with('success', 'Pengambilan berhasil diproses. Kembalian: Rp ' . number_format($order_change, 0, ',', '.'));
         } catch (\Exception $e) {
             DB::rollBack();

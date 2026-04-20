@@ -28,15 +28,19 @@ export default function Index({ orders }) {
 
     const handlePayment = (e) => {
         e.preventDefault();
+        const alreadyPaid = selectedOrder?.payment_status === 1;
+
         import('sweetalert2').then((Swal) => {
             Swal.default.fire({
-                title: 'Selesaikan Pembayaran?',
-                text: `Konfirmasi pembayaran untuk order ${selectedOrder.order_code}.`,
+                title: alreadyPaid ? 'Konfirmasi Pengambilan?' : 'Selesaikan Pembayaran?',
+                text: alreadyPaid 
+                    ? `Order ${selectedOrder.order_code} sudah lunas. Konfirmasi pengambilan?`
+                    : `Konfirmasi pembayaran untuk order ${selectedOrder.order_code}.`,
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#0284c7',
+                confirmButtonColor: alreadyPaid ? '#10b981' : '#0284c7',
                 cancelButtonColor: '#f43f5e',
-                confirmButtonText: 'Ya, Bayar & Ambil',
+                confirmButtonText: alreadyPaid ? 'Ya, Konfirmasi Ambil' : 'Ya, Bayar & Ambil',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -51,8 +55,9 @@ export default function Index({ orders }) {
         });
     }
 
+    const alreadyPaid = selectedOrder?.payment_status === 1;
     const payableAmount = selectedOrder?.final_total ?? selectedOrder?.total ?? 0;
-    const change = (data.order_pay && !isNaN(data.order_pay)) ? Number(data.order_pay) - payableAmount : 0;
+    const change = (!alreadyPaid && data.order_pay && !isNaN(data.order_pay)) ? Number(data.order_pay) - payableAmount : 0;
 
     return (
         <AuthenticatedLayout header="Pengambilan & Pembayaran">
@@ -72,6 +77,7 @@ export default function Index({ orders }) {
                                 <th className="px-5 py-3">Pelanggan</th>
                                 <th className="px-5 py-3">Tgl Masuk</th>
                                 <th className="px-5 py-3">Layanan / Detail</th>
+                                <th className="px-5 py-3 text-center">Status Bayar</th>
                                 <th className="px-5 py-3 text-right">Total Tagihan</th>
                                 <th className="px-5 py-3 text-center">Aksi</th>
                             </tr>
@@ -100,6 +106,19 @@ export default function Index({ orders }) {
                                             ))}
                                         </ul>
                                     </td>
+                                    <td className="px-5 py-3 text-center">
+                                        {order.payment_status === 1 ? (
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                                                Lunas
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                                <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
+                                                Belum Bayar
+                                            </span>
+                                        )}
+                                    </td>
                                     <td className="px-5 py-3 text-right font-bold">
                                         <span className="text-rose-600 text-base">
                                             {formatCurrency(order.final_total ?? order.total)}
@@ -108,16 +127,20 @@ export default function Index({ orders }) {
                                     <td className="px-5 py-3 text-center">
                                         <button 
                                             onClick={() => openModal(order)} 
-                                            className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm"
+                                            className={`font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap text-sm ${
+                                                order.payment_status === 1
+                                                    ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                                                    : 'bg-sky-500 hover:bg-sky-600 text-white'
+                                            }`}
                                         >
-                                            Ambil & Bayar
+                                            {order.payment_status === 1 ? 'Ambil' : 'Ambil & Bayar'}
                                         </button>
                                     </td>
                                 </tr>
                             ))}
                             {orders.data.length === 0 && (
                                 <tr>
-                                    <td colSpan="6" className="px-5 py-14 text-center">
+                                    <td colSpan="7" className="px-5 py-14 text-center">
                                         <div className="mx-auto w-14 h-14 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mb-3">
                                             <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
@@ -132,13 +155,15 @@ export default function Index({ orders }) {
                 </div>
             </div>
 
-            {/* Payment Modal */}
+            {/* Payment / Pickup Modal */}
             {selectedOrder && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black/50 p-4">
                     <div className="relative w-full max-w-md bg-white rounded-xl shadow-lg p-5 sm:p-6">
                         <div className="flex justify-between items-start mb-4">
                             <div>
-                                <h3 className="text-xl font-bold text-gray-800">Pembayaran</h3>
+                                <h3 className="text-xl font-bold text-gray-800">
+                                    {alreadyPaid ? 'Konfirmasi Pengambilan' : 'Pembayaran'}
+                                </h3>
                                 <p className="text-sm text-gray-500 font-mono mt-0.5">{selectedOrder.order_code}</p>
                             </div>
                             <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 bg-gray-100 rounded-full p-1.5">
@@ -146,8 +171,9 @@ export default function Index({ orders }) {
                             </button>
                         </div>
                         
-                        <div className="bg-rose-50 rounded-lg p-4 mb-5 border border-rose-100 space-y-2">
-                            <div className="flex justify-between items-center text-rose-800 text-xs font-semibold uppercase tracking-wide">
+                        {/* Order Total Info */}
+                        <div className={`rounded-lg p-4 mb-5 border space-y-2 ${alreadyPaid ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}`}>
+                            <div className={`flex justify-between items-center text-xs font-semibold uppercase tracking-wide ${alreadyPaid ? 'text-emerald-800' : 'text-rose-800'}`}>
                                 <span>Subtotal & Pajak</span>
                                 <span>{formatCurrency(selectedOrder.total)}</span>
                             </div>
@@ -157,38 +183,65 @@ export default function Index({ orders }) {
                                     <span>-{formatCurrency(selectedOrder.discount_amount)}</span>
                                 </div>
                             )}
-                            <div className="pt-2 border-t border-rose-200 flex justify-between items-baseline">
-                                <span className="text-rose-900 text-sm font-bold uppercase tracking-wide">Grand Total</span>
-                                <span className="text-3xl font-bold text-rose-600">{formatCurrency(selectedOrder.final_total ?? selectedOrder.total)}</span>
+                            <div className={`pt-2 border-t flex justify-between items-baseline ${alreadyPaid ? 'border-emerald-200' : 'border-rose-200'}`}>
+                                <span className={`text-sm font-bold uppercase tracking-wide ${alreadyPaid ? 'text-emerald-900' : 'text-rose-900'}`}>Grand Total</span>
+                                <span className={`text-3xl font-bold ${alreadyPaid ? 'text-emerald-600' : 'text-rose-600'}`}>{formatCurrency(payableAmount)}</span>
                             </div>
                         </div>
 
-                        <form onSubmit={handlePayment} className="space-y-4">
-                            <div>
-                                <label className="block text-xs font-semibold tracking-wide text-gray-700 uppercase mb-1.5">Uang Diterima (Rp)</label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <span className="text-gray-500 font-semibold">Rp</span>
-                                    </div>
-                                    <input
-                                        type="number"
-                                        min={payableAmount}
-                                        value={data.order_pay}
-                                        onChange={(e) => setData('order_pay', e.target.value)}
-                                        className="block w-full pl-10 rounded-lg border-gray-200 shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-200 bg-gray-50 focus:bg-white text-gray-800 text-lg font-bold py-2.5 px-4"
-                                        placeholder="0"
-                                        autoFocus
-                                    />
+                        {/* Already Paid Badge */}
+                        {alreadyPaid && (
+                            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-5 flex items-center gap-3">
+                                <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                    </svg>
                                 </div>
-                                {errors.order_pay && <p className="mt-1 text-sm text-red-500 font-medium">{errors.order_pay}</p>}
+                                <div>
+                                    <p className="text-sm font-bold text-emerald-800">Pembayaran Sudah Diterima</p>
+                                    <p className="text-xs text-emerald-600 mt-0.5">
+                                        Dibayar pada: {selectedOrder.paid_at ? new Date(selectedOrder.paid_at).toLocaleString('id-ID') : '-'}
+                                    </p>
+                                    {selectedOrder.order_pay && (
+                                        <p className="text-xs text-emerald-600">
+                                            Uang: {formatCurrency(selectedOrder.order_pay)} • Kembalian: {formatCurrency(selectedOrder.order_change ?? 0)}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
+                        )}
 
-                            <div className="bg-sky-50 border border-sky-100 rounded-lg p-3 flex justify-between items-center">
-                                <span className="text-sky-800 text-sm font-semibold uppercase tracking-wide">Kembalian</span>
-                                <span className={`text-xl font-bold ${change >= 0 ? 'text-sky-600' : 'text-red-500'}`}>
-                                    {formatCurrency(change)}
-                                </span>
-                            </div>
+                        <form onSubmit={handlePayment} className="space-y-4">
+                            {/* Payment Input - only if NOT already paid */}
+                            {!alreadyPaid && (
+                                <>
+                                    <div>
+                                        <label className="block text-xs font-semibold tracking-wide text-gray-700 uppercase mb-1.5">Uang Diterima (Rp)</label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span className="text-gray-500 font-semibold">Rp</span>
+                                            </div>
+                                            <input
+                                                type="number"
+                                                min={payableAmount}
+                                                value={data.order_pay}
+                                                onChange={(e) => setData('order_pay', e.target.value)}
+                                                className="block w-full pl-10 rounded-lg border-gray-200 shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-200 bg-gray-50 focus:bg-white text-gray-800 text-lg font-bold py-2.5 px-4"
+                                                placeholder="0"
+                                                autoFocus
+                                            />
+                                        </div>
+                                        {errors.order_pay && <p className="mt-1 text-sm text-red-500 font-medium">{errors.order_pay}</p>}
+                                    </div>
+
+                                    <div className="bg-sky-50 border border-sky-100 rounded-lg p-3 flex justify-between items-center">
+                                        <span className="text-sky-800 text-sm font-semibold uppercase tracking-wide">Kembalian</span>
+                                        <span className={`text-xl font-bold ${change >= 0 ? 'text-sky-600' : 'text-red-500'}`}>
+                                            {formatCurrency(change)}
+                                        </span>
+                                    </div>
+                                </>
+                            )}
 
                             <div>
                                 <label className="block text-xs font-semibold tracking-wide text-gray-700 uppercase mb-1.5">Catatan Tambahan (Opsional)</label>
@@ -204,10 +257,14 @@ export default function Index({ orders }) {
 
                             <button 
                                 type="submit" 
-                                disabled={processing || data.order_pay < payableAmount} 
-                                className="w-full py-3 mt-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base uppercase tracking-wide"
+                                disabled={processing || (!alreadyPaid && data.order_pay < payableAmount)} 
+                                className={`w-full py-3 mt-1 font-bold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base uppercase tracking-wide ${
+                                    alreadyPaid 
+                                        ? 'bg-emerald-500 hover:bg-emerald-600 text-white' 
+                                        : 'bg-sky-600 hover:bg-sky-700 text-white'
+                                }`}
                             >
-                                Selesaikan Pesanan
+                                {alreadyPaid ? 'Konfirmasi Pengambilan' : 'Selesaikan Pesanan'}
                             </button>
                         </form>
                     </div>

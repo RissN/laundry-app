@@ -45,6 +45,8 @@ class TransactionController extends Controller
             'is_non_member' => 'nullable|boolean',
             'non_member_name' => 'required_if:is_non_member,true|string|nullable|max:255',
             'non_member_phone' => 'required_if:is_non_member,true|string|nullable|max:20',
+            'payment_method' => 'required|in:pay_later,pay_now',
+            'order_pay' => 'nullable|numeric|min:0',
         ]);
 
         DB::beginTransaction();
@@ -117,6 +119,24 @@ class TransactionController extends Controller
                 $totalBeforeDiscount
             );
 
+            // Handle Payment Method
+            $payNow = $request->payment_method === 'pay_now';
+            $finalTotal = $discountData['final_total'];
+            $orderPay = null;
+            $orderChange = null;
+            $paymentStatus = 0;
+            $paidAt = null;
+
+            if ($payNow && $request->order_pay) {
+                $orderPay = $request->order_pay;
+                $orderChange = $orderPay - $finalTotal;
+                if ($orderChange < 0) {
+                    throw new \Exception('Uang yang dibayarkan kurang dari total tagihan.');
+                }
+                $paymentStatus = 1;
+                $paidAt = now();
+            }
+
             // Create Order
             $order = TransOrder::create([
                 'id_customer' => $customerId,
@@ -126,11 +146,15 @@ class TransactionController extends Controller
                 'order_code' => $orderCode,
                 'order_date' => date('Y-m-d'),
                 'order_status' => 0,
+                'payment_status' => $paymentStatus,
+                'paid_at' => $paidAt,
                 'tax' => $taxAmount,
                 'total' => $totalBeforeDiscount,
                 'discount_percent' => $discountData['discount_percent'],
                 'discount_amount' => $discountData['discount_amount'],
-                'final_total' => $discountData['final_total'],
+                'final_total' => $finalTotal,
+                'order_pay' => $orderPay,
+                'order_change' => $orderChange,
             ]);
 
             // Record Voucher Usage
@@ -148,7 +172,11 @@ class TransactionController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('operator.pickup.index')->with('success', "Order $orderCode berhasil dibuat.");
+            $successMsg = "Order $orderCode berhasil dibuat.";
+            if ($payNow) {
+                $successMsg .= " Pembayaran lunas. Kembalian: Rp " . number_format($orderChange, 0, ',', '.');
+            }
+            return redirect()->route('operator.pickup.index')->with('success', $successMsg);
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Transaksi gagal: ' . $e->getMessage());

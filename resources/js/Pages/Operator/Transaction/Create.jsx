@@ -19,7 +19,9 @@ import {
     LucideReceipt,
     Ticket,
     XCircle,
-    Check
+    Check,
+    Wallet,
+    Banknote
 } from 'lucide-react';
 
 export default function Create({ customers, services }) {
@@ -33,7 +35,9 @@ export default function Create({ customers, services }) {
         voucher_code: '',
         is_non_member: false,
         non_member_name: '',
-        non_member_phone: ''
+        non_member_phone: '',
+        payment_method: 'pay_later',
+        order_pay: ''
     });
 
     const [voucherData, setVoucherData] = useState(null);
@@ -519,17 +523,88 @@ export default function Create({ customers, services }) {
                                         </div>
                                     </div>
 
+                                    {/* Payment Method Toggle */}
+                                    <div className="mb-5 space-y-3">
+                                        <p className="text-xs font-semibold uppercase text-sky-500 tracking-wide">Metode Pembayaran</p>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => { setData('payment_method', 'pay_later'); setData('order_pay', ''); }}
+                                                className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg border-2 transition-all text-center ${
+                                                    data.payment_method === 'pay_later'
+                                                        ? 'border-sky-500 bg-sky-50 text-sky-700'
+                                                        : 'border-gray-200 bg-white text-gray-400 hover:border-gray-300'
+                                                }`}
+                                            >
+                                                <Wallet size={18} />
+                                                <span className="text-xs font-bold uppercase tracking-wide">Bayar Nanti</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setData('payment_method', 'pay_now')}
+                                                className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-lg border-2 transition-all text-center ${
+                                                    data.payment_method === 'pay_now'
+                                                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                                                        : 'border-gray-200 bg-white text-gray-400 hover:border-gray-300'
+                                                }`}
+                                            >
+                                                <Banknote size={18} />
+                                                <span className="text-xs font-bold uppercase tracking-wide">Bayar Sekarang</span>
+                                            </button>
+                                        </div>
+
+                                        {/* Pay Now Input */}
+                                        {data.payment_method === 'pay_now' && (
+                                            <div className="space-y-3 p-3 bg-emerald-50 rounded-lg border border-emerald-100 animate-in">
+                                                <div className="space-y-1.5">
+                                                    <label className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Uang Diterima (Rp)</label>
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <span className="text-emerald-500 font-semibold text-sm">Rp</span>
+                                                        </div>
+                                                        <input
+                                                            type="number"
+                                                            min={totals.total}
+                                                            value={data.order_pay}
+                                                            onChange={(e) => setData('order_pay', e.target.value)}
+                                                            className="block w-full pl-10 rounded-lg border-emerald-200 bg-white py-2.5 px-4 text-gray-800 text-base font-bold focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition-colors"
+                                                            placeholder="0"
+                                                        />
+                                                    </div>
+                                                    {errors.order_pay && <p className="text-xs text-rose-500 font-medium">{errors.order_pay}</p>}
+                                                </div>
+                                                {data.order_pay && Number(data.order_pay) >= totals.total && (
+                                                    <div className="flex justify-between items-center bg-white p-2.5 rounded-lg border border-emerald-100">
+                                                        <span className="text-emerald-700 text-xs font-semibold uppercase">Kembalian</span>
+                                                        <span className="text-lg font-bold text-emerald-600">
+                                                            {formatCurrency(Number(data.order_pay) - totals.total)}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+
                                     <button 
                                         type="submit" 
-                                        disabled={processing || totals.total === 0 || (!data.id_customer && !isNewCustomer && !data.is_non_member)}
-                                        className="w-full bg-sky-600 hover:bg-sky-700 text-white py-3.5 rounded-xl font-bold text-sm transition-colors disabled:opacity-30 flex items-center justify-center gap-2 uppercase tracking-wide"
+                                        disabled={
+                                            processing || 
+                                            totals.total === 0 || 
+                                            (!data.id_customer && !isNewCustomer && !data.is_non_member) ||
+                                            (data.payment_method === 'pay_now' && (!data.order_pay || Number(data.order_pay) < totals.total))
+                                        }
+                                        className={`w-full py-3.5 rounded-xl font-bold text-sm transition-colors disabled:opacity-30 flex items-center justify-center gap-2 uppercase tracking-wide ${
+                                            data.payment_method === 'pay_now' 
+                                                ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
+                                                : 'bg-sky-600 hover:bg-sky-700 text-white'
+                                        }`}
                                     >
                                         {processing ? (
                                             <Loader2 size={18} className="animate-spin" />
                                         ) : (
-                                            <CheckCircle size={18} />
+                                            data.payment_method === 'pay_now' ? <Banknote size={18} /> : <CheckCircle size={18} />
                                         )}
-                                        <span>{processing ? 'Proses...' : 'Finalisasi & Bayar'}</span>
+                                        <span>{processing ? 'Proses...' : (data.payment_method === 'pay_now' ? 'Finalisasi & Bayar' : 'Finalisasi Transaksi')}</span>
                                     </button>
                                 </form>
                                 
