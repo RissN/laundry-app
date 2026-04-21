@@ -19,7 +19,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $levels = Level::all();
+        $levels = Level::where('id', '!=', 1)->get();
         return Inertia::render('Admin/User/Form', compact('levels'));
     }
 
@@ -38,7 +38,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $levels = Level::all();
+        $levels = Level::where('id', '!=', 1)->get();
         return Inertia::render('Admin/User/Form', compact('user', 'levels'));
     }
 

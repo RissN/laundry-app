@@ -123,7 +123,7 @@ export default function Create({ customers, services, activeQueueCount }) {
         setVoucherError('');
     };
 
-    const TAX_RATE = 0.10;
+    const TAX_RATE = 0.12;
 
     const calculateTotals = () => {
         let subtotalItems = 0;

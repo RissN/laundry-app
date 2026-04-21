@@ -220,7 +220,7 @@
             <span class="value">Rp {{ number_format($subtotalItems, 0, ',', '.') }}</span>
         </div>
         <div class="summary-row">
-            <span class="label">Pajak (10%)</span>
+            <span class="label">Pajak (12%)</span>
             <span class="value">Rp {{ number_format($order->tax, 0, ',', '.') }}</span>
         </div>
 

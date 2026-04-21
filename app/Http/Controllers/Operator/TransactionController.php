@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
-    const TAX_RATE = 0.10;
+    const TAX_RATE = 0.12;
     protected $discountService;
 
     public function __construct(DiscountService $discountService)
