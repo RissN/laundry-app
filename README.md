@@ -65,36 +65,39 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan project di lingkungan lokal
 
 ---
 
-## 1. Fitur Utama & Dashboard Berbasis Role
+## 1. Fitur Penuh & Dashboard Berbasis Role
 
-Sistem ini memiliki Dashboard dinamis yang menyesuaikan dengan level otoritas pengguna:
+Sistem ini memiliki Dashboard dinamis yang menyesuaikan dengan level otoritas pengguna, dilengkapi dengan fitur-fitur baru pendukung operasional:
 
 ### Dashboard Admin
 - **Metrik Sistem**: Total pelanggan terdaftar, jumlah order hari ini, dan total pendapatan harian.
-- **Manajemen Master**: Kendali penuh atas data layanan (Service) dan manajemen akun pengguna (User).
+- **Manajemen Master**: Kendali penuh atas data layanan (Service), manajemen akun pengguna (User), dan pengelolaan kode promo melalui fitur **Voucher Diskon**.
 
 ### Dashboard Operator (Kasir)
 - **Metrik Operasional**: Jumlah transaksi masuk hari ini, daftar antrean pengambilan (Pending Pickups), dan total pickup sukses.
 - **Transaksi Terbaru**: Tabel *real-time* yang menampilkan aktivitas laundry terbaru.
-- **POS (Point of Sale)**: Menu "Terima Laundry" yang telah dirombak dengan UI mewah, memudahkan input berat, estimasi harga, dan data pelanggan baru secara instan.
+- **POS (Point of Sale)**: Menu "Terima Laundry" kini telah dirombak dengan UI mewah, mendukung transaksi tamu/non-member ("Tanpa Daftar"), verifikasi **Kode Voucher** untuk diskon, dan kalkulasi total akhir secara otomatis.
+- **Cetak Nota Otomatis**: Mendukung langsung pencetakan *Receipt* atau nota tagihan ke dalam format PDF setelah transaksi berhasil.
 
 ### Dashboard Pimpinan
-- **Analisis Performa**: Statistik mingguan/bulanan mengenai total order dan total pendapatan.
-- **Laporan Penjualan**: Filter laporan berdasarkan rentang tanggal untuk kebutuhan audit dan rekapitulasi.
+- **Analisis Performa**: Statistik mingguan/bulanan mengenai total order dan total pendapatan kotor/bersih.
+- **Laporan Penjualan Excel/PDF**: Fitur memfilter laporan berdasarkan rentang tanggal untuk kebutuhan audit, kini mendukung aksi **Export / Cetak PDF Laporan**.
 
 ---
 
-## 2. Tabel Hak Akses & Menu
+## 2. Tabel Hak Akses & Menu Utama
 
 | Modul / Menu               | Kegunaan                                                              | Diakses Oleh                   |
 |----------------------------|-----------------------------------------------------------------------|--------------------------------|
 | **Dashboard**              | Metrik statistik khusus berdasarkan peran/role pengguna.              | Admin, Operator, Pimpinan      |
-| **Data Customer**          | Manajemen data pelanggan laundry.                                     | Admin                          |
-| **Data User**              | Pengelolaan akun staf (Operator & Pimpinan).                          | Admin                          |
-| **Data Service**           | Pengaturan jenis layanan dan harga per kilogram.                      | Admin                          |
-| **Terima Laundry**         | POS modern untuk mencatat cucian masuk (berat & instruksi).           | Admin, Operator                |
-| **Pengambilan & Bayar**    | Modul kasir untuk pelunasan dan serah terima pakaian.                 | Admin, Operator                |
-| **Laporan Penjualan**      | Laporan detil pendapatan dengan filter periode waktu.                 | Pimpinan                       |
+| **Data Customer**          | Manajemen data pelanggan member laundry.                              | Admin                          |
+| **Data User**              | Pengelolaan akun pegawai (Operator & Pimpinan).                       | Admin                          |
+| **Data Service**           | Pengaturan jenis layanan dan estimasi waktu pengerjaan.               | Admin                          |
+| **Voucher Diskon**         | Manajemen pembuatan kode promo potongan harga berbatas waktu/kuota.   | Admin                          |
+| **Terima Laundry**         | Sistem POS modern mencatat cucian, diskon voucher, & input non-member.| Admin, Operator                |
+| **Pengambilan & Bayar**    | Modul daftar antrean untuk pelunasan dan serah terima pakaian.        | Admin, Operator                |
+| **Cetak Nota (Receipt)**   | Tautan nota transaksi digital berformat PDF yang bisa diprint.        | Admin, Operator                |
+| **Laporan Penjualan**      | Laporan omset kotor/bersih rentang waktu dengan tombol Export PDF.    | Pimpinan                       |
 
 ---
 
